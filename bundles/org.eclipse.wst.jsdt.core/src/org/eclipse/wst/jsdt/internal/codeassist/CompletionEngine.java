@@ -283,7 +283,7 @@ public final class CompletionEngine
 				this.simpleTypeName = simpleTypeName;
 				this.modifiers = modifiers;
 				this.accessibility = accessibility;
-			}
+		}
 		public char[] packageName;
 		public char[] simpleTypeName;
 		public char[][] enclosingTypeNames;
