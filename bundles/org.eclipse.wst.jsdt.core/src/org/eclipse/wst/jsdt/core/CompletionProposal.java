@@ -845,7 +845,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 			// Work around for bug 132558 (https://bugs.eclipse.org/bugs/show_bug.cgi?id=132558).
 			// completionLocation can be -1 if the completion occur at the start of a file or
 			// the start of a code snippet but this API isn't design to support negative position.
-			if(this.completion == null || completionLocation != -1) {
+			if (this.completion == null || completionLocation != -1) {
 				throw new IllegalArgumentException();
 			}
 			completionLocation = 0;
@@ -1000,12 +1000,12 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * @return the completion string
 	 */
 	public char[] getCompletion() {
-		if(this.completionKind == METHOD_DECLARATION) {
+		if (this.completionKind == METHOD_DECLARATION) {
 			this.findParameterNames(null);
-			if(this.updateCompletion) {
+			if (this.updateCompletion) {
 				this.updateCompletion = false;
 
-				if(this.parameterNames != null) {
+				if (this.parameterNames != null) {
 					int length = this.parameterNames.length;
 					StringBuffer completionBuffer = new StringBuffer(this.completion.length);
 
@@ -1014,7 +1014,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 
 					completionBuffer.append(this.completion, start, end - start);
 
-					for(int i = 0 ; i < length ; i++){
+					for (int i = 0 ; i < length ; i++) {
 						completionBuffer.append(this.parameterNames[i]);
 						start = end + 1;
 						end = CharOperation.indexOf('%', this.completion, start);

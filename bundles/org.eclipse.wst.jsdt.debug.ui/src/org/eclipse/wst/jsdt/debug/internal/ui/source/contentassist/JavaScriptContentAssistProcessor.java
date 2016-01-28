@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaParameterListValidator;
+import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.KeywordEngine;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateEngine;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
@@ -44,25 +45,29 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
 	private IContextInformationValidator fValidator;
 	private TemplateEngine fJavaEngine;
 	private TemplateEngine fStatementEngine;
+	private KeywordEngine fKeywordEngine;
+	
     private String fErrorMessage = null;
 	
 	private char[] fProposalAutoActivationSet;
 	private CompletionProposalComparator fComparator;
 	private ScriptContext fContext;
 		
-	/**
-	 * Constructor
-	 * @param context
-	 */
 	public JavaScriptContentAssistProcessor(ScriptContext context) {
 		fContext = context;
 		TemplateContextType contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		if (contextType != null) {
 			fJavaEngine = new TemplateEngine(contextType);
 		}
+		
 		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		if (contextType != null) {
 			fStatementEngine = new TemplateEngine(contextType);
+		}
+
+		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+		if (contextType != null) {
+			fKeywordEngine = new KeywordEngine(contextType);
 		}
 		
 		fComparator = new CompletionProposalComparator();
@@ -125,26 +130,39 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
         setErrorMessage(null);
 		try {
+			System.out.println("computeCompletionProposals was called!"); //$NON-NLS-1$
 			List total = new ArrayList();
 			ITypeRoot root = fContext.getJavaScriptRoot();
-			if(root != null) {
+			
+			if (root != null) {
 				IJavaScriptProject project = root.getJavaScriptProject();
 				ITextSelection selection= (ITextSelection)viewer.getSelectionProvider().getSelection();
 				configureResultCollector(project, selection);	
 				root.codeComplete(documentOffset, fCollector);
-				total.addAll(Arrays.asList(fCollector.getJavaCompletionProposals()));
+//				total.addAll(Arrays.asList(fCollector.getJavaCompletionProposals()));
 			}
-			if (fJavaEngine != null) {
-				fJavaEngine.reset();
-				fJavaEngine.complete(viewer, documentOffset, null);
-				total.addAll(Arrays.asList(fJavaEngine.getResults()));
+//			
+//			if (fJavaEngine != null) {
+//				fJavaEngine.reset();
+//				fJavaEngine.complete(viewer, documentOffset, null);
+//				total.addAll(Arrays.asList(fJavaEngine.getResults()));
+//			}
+//			
+//			if (fStatementEngine != null) {
+//				fStatementEngine.reset();
+//				fStatementEngine.complete(viewer, documentOffset, null);
+//				total.addAll(Arrays.asList(fStatementEngine.getResults()));
+//			}
+//			
+			if (fKeywordEngine != null) {
+				System.out.println("fKeywordEngine reset"); //$NON-NLS-1$
+				fKeywordEngine.reset();
+				fKeywordEngine.complete(viewer, documentOffset, null);
+				total.addAll(Arrays.asList(fKeywordEngine.getResults()));
+			} else {
+				System.out.println("fKeywordEngine is null"); //$NON-NLS-1$
 			}
 			
-			if (fStatementEngine != null) {
-				fStatementEngine.reset();
-				fStatementEngine.complete(viewer, documentOffset, null);
-				total.addAll(Arrays.asList(fStatementEngine.getResults()));
-			}
 			return order((IJavaCompletionProposal[])total.toArray(new IJavaCompletionProposal[total.size()]));	
 		} catch (CoreException x) {
 			setErrorMessage(x.getStatus().getMessage());

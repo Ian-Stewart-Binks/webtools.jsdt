@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
-import org.eclipse.wst.jsdt.internal.codeassist.DOMCompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -110,6 +109,7 @@ protected void closeBuffer() {
 protected void closing(Object info) {
 	closeBuffer();
 }
+
 protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit unitToSkip, int position, CompletionRequestor requestor, WorkingCopyOwner owner) throws JavaScriptModelException {
 	if (requestor == null) {
 		throw new IllegalArgumentException("Completion requestor cannot be null"); //$NON-NLS-1$
@@ -128,7 +128,6 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS));
 	}
 	JavaProject project = (JavaProject) getJavaScriptProject();
-//	SearchableEnvironment environment = newSearchableNameEnvironment(owner);
 
 	ASTHolderCUInfo info = new ASTHolderCUInfo();
 	info.astLevel = AST.JLS3;
@@ -139,25 +138,9 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 	org.eclipse.wst.jsdt.core.dom.JavaScriptUnit result = info.ast;
 	
 	
-	DOMCompletionEngine domEngine = new DOMCompletionEngine(requestor, project);
-	domEngine.complete(result, position,0);
-
 	
-	// set unit to skip
-//	environment.unitToSkip = unitToSkip;
-
-	// code complete
-//	CompletionEngine engine = new CompletionEngine(environment, requestor, project.getOptions(true), project);
-//	engine.complete(cu, position, 0);
-	
-	if(performanceStats != null) {
-		performanceStats.endRun();
-	}
-	if (NameLookup.VERBOSE) {
-//		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-//		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-	}
 }
+
 protected IJavaScriptElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, int offset, int length, WorkingCopyOwner owner) throws JavaScriptModelException {
 	PerformanceStats performanceStats = SelectionEngine.PERF
 		? PerformanceStats.getStats(JavaModelManager.SELECTION_PERF, this)

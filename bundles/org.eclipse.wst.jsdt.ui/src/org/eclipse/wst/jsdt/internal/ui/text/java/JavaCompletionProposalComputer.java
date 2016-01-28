@@ -58,7 +58,7 @@ public class JavaCompletionProposalComputer implements IJavaCompletionProposalCo
 			return fContextInformation.getContextDisplayString();
 		}
 
-			/*
+		/*
 		 * @see IContextInformation#getImage()
 		 */
 		public Image getImage() {

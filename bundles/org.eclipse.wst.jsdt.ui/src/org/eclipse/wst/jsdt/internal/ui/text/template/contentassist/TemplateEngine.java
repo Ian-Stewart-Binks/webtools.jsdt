@@ -40,10 +40,12 @@ public class TemplateEngine {
 
 	/** The context type. */
 	private TemplateContextType fContextType;
+	
 	/** The result proposals. */
-	private ArrayList fProposals= new ArrayList();
+	private ArrayList<TemplateProposal> fProposals= new ArrayList<TemplateProposal>();
+	
 	/** Positions created on the key documents to remove in reset. */
-	private final Map fPositions= new HashMap();
+	private final Map<IDocument, Position> fPositions= new HashMap<IDocument, Position>();
 
 	/**
 	 * Creates the template engine for a particular context type.
@@ -51,7 +53,7 @@ public class TemplateEngine {
 	 */
 	public TemplateEngine(TemplateContextType contextType) {
 		Assert.isNotNull(contextType);
-		fContextType= contextType;
+		fContextType = contextType;
 	}
 
 	/**
@@ -59,10 +61,10 @@ public class TemplateEngine {
 	 */
 	public void reset() {
 		fProposals.clear();
-		for (Iterator it= fPositions.entrySet().iterator(); it.hasNext();) {
-			Entry entry= (Entry) it.next();
-			IDocument doc= (IDocument) entry.getKey();
-			Position position= (Position) entry.getValue();
+		for (Iterator it = fPositions.entrySet().iterator(); it.hasNext();) {
+			Entry entry = (Entry) it.next();
+			IDocument doc = (IDocument) entry.getKey();
+			Position position = (Position) entry.getValue();
 			doc.removePosition(position);
 		}
 		fPositions.clear();
@@ -72,7 +74,7 @@ public class TemplateEngine {
 	 * Returns the array of matching templates.
 	 */
 	public TemplateProposal[] getResults() {
-		return (TemplateProposal[]) fProposals.toArray(new TemplateProposal[fProposals.size()]);
+		return fProposals.toArray(new TemplateProposal[fProposals.size()]);
 	}
 
 	/**
@@ -83,50 +85,55 @@ public class TemplateEngine {
 	 * @param compilationUnit the compilation unit (may be <code>null</code>)
 	 */
 	public void complete(ITextViewer viewer, int completionPosition, IJavaScriptUnit compilationUnit) {
-	    IDocument document= viewer.getDocument();
+	    IDocument document = viewer.getDocument();
 
-		if (!(fContextType instanceof CompilationUnitContextType))
+		if (!(fContextType instanceof CompilationUnitContextType)) {
 			return;
+		}
 
-		Point selection= viewer.getSelectedRange();
-		Position position= new Position(completionPosition, selection.y);
+		Point selection = viewer.getSelectedRange();
+		Position position = new Position(completionPosition, selection.y);
 
 		// remember selected text
-		String selectedText= null;
+		String selectedText = null;
 		if (selection.y != 0) {
 			try {
 				selectedText= document.get(selection.x, selection.y);
 				document.addPosition(position);
 				fPositions.put(document, position);
-			} catch (BadLocationException e) {}
+			} catch (BadLocationException e) {
+				// do nothing
+			}
 		}
 
-		CompilationUnitContext context= ((CompilationUnitContextType) fContextType).createContext(document, position, compilationUnit);
+		CompilationUnitContext context = ((CompilationUnitContextType) fContextType).createContext(document, position, compilationUnit);
 		context.setVariable("selection", selectedText); //$NON-NLS-1$
-		int start= context.getStart();
-		int end= context.getEnd();
-		IRegion region= new Region(start, end - start);
+		int start = context.getStart();
+		int end = context.getEnd();
+		IRegion region = new Region(start, end - start);
 
-		Template[] templates= JavaScriptPlugin.getDefault().getTemplateStore().getTemplates();
+		Template[] templates = JavaScriptPlugin.getDefault().getTemplateStore().getTemplates();
 
 		if (selection.y == 0) {
-			for (int i= 0; i != templates.length; i++)
-				if (context.canEvaluate(templates[i]))
+			for (int i= 0; i != templates.length; i++) {				
+				if (context.canEvaluate(templates[i])) {
 					fProposals.add(new TemplateProposal(templates[i], context, region, JavaPluginImages.get(JavaPluginImages.IMG_OBJS_TEMPLATE)));
-
+				}
+			}
 		} else {
 
-			if (context.getKey().length() == 0)
+			if (context.getKey().length() == 0) {
 				context.setForceEvaluation(true);
+			}
 
-			boolean multipleLinesSelected= areMultipleLinesSelected(viewer);
+			boolean multipleLinesSelected = areMultipleLinesSelected(viewer);
 
 			for (int i= 0; i != templates.length; i++) {
 				Template template= templates[i];
 				if (context.canEvaluate(template) &&
 					template.getContextTypeId().equals(context.getContextType().getId()) &&
-					(!multipleLinesSelected && template.getPattern().indexOf($_WORD_SELECTION) != -1 || (multipleLinesSelected && template.getPattern().indexOf($_LINE_SELECTION) != -1)))
-				{
+					(!multipleLinesSelected && template.getPattern().indexOf($_WORD_SELECTION) != -1 || 
+					(multipleLinesSelected && template.getPattern().indexOf($_LINE_SELECTION) != -1))) {
 					fProposals.add(new TemplateProposal(templates[i], context, region, JavaPluginImages.get(JavaPluginImages.IMG_OBJS_TEMPLATE)));
 				}
 			}
@@ -142,21 +149,21 @@ public class TemplateEngine {
 	 * 
 	 */
 	private boolean areMultipleLinesSelected(ITextViewer viewer) {
-		if (viewer == null)
+		if (viewer == null) {
 			return false;
+		}
 
-		Point s= viewer.getSelectedRange();
-		if (s.y == 0)
+		Point s = viewer.getSelectedRange();
+		if (s.y == 0) {
 			return false;
+		}
 
 		try {
-
 			IDocument document= viewer.getDocument();
-			int startLine= document.getLineOfOffset(s.x);
-			int endLine= document.getLineOfOffset(s.x + s.y);
-			IRegion line= document.getLineInformation(startLine);
+			int startLine = document.getLineOfOffset(s.x);
+			int endLine = document.getLineOfOffset(s.x + s.y);
+			IRegion line = document.getLineInformation(startLine);
 			return startLine != endLine || (s.x == line.getOffset() && s.y == line.getLength());
-
 		} catch (BadLocationException x) {
 			return false;
 		}
