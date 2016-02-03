@@ -10,6 +10,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -35,22 +36,30 @@ import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
  */
 public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
-	private ArrayList<String> identifiers = new ArrayList<String>();
+	private ArrayList<VariableDeclarationIdentifierProposal> variableDeclarationIdentifiers = new ArrayList<VariableDeclarationIdentifierProposal>();
+	private ArrayList<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifiers = new ArrayList<FunctionDeclarationIdentifierProposal>();
+
+	int filePosition;
+	public Stack<Scope> scopes = new Stack<Scope>();
+	
 	
 	public class Scope {
 		ArrayList<CompletionProposal> proposals = new ArrayList<CompletionProposal>(); 
 	}
 	
-	public ArrayList<String> getIdentifiers() {
-		return this.identifiers;
+	public List<VariableDeclarationIdentifierProposal> getVariableDeclarationIdentifiers(String key) {
+		return variableDeclarationIdentifiers.stream().filter(k -> k.getDisplayString().startsWith(key)).collect(Collectors.toList());
+	}
+
+	
+	public List<FunctionDeclarationIdentifierProposal> getFunctionDeclarationIdentifiers(String key) {
+		return functionDeclarationIdentifiers.stream().filter(k -> k.getDisplayString().startsWith(key)).collect(Collectors.toList());
 	}
 	
 	public void clearIdentifierProposals() {
-		this.identifiers.clear();
+		this.variableDeclarationIdentifiers.clear();
+		this.functionDeclarationIdentifiers.clear();
 	}
-
-	int filePosition;
-	public Stack<Scope> scopes = new Stack<Scope>();
 	
 	public ScopedCodeAssistVisitor(int position) {
 		filePosition = position;
@@ -87,6 +96,9 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	public boolean visit(FunctionDeclaration node) {
 		System.out.println("FunctionDeclaration >>");
+		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), node.parameters());
+		functionDeclarationIdentifiers.add(fProp);
+		
 		if (node.getStartPosition() < filePosition && node.getName() != null) {
 			final String nodeName = node.getName().toString();
 			CompletionProposal proposal = createProposal(CompletionProposal.METHOD_REF, nodeName, nodeName + "()");
@@ -130,16 +142,17 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 			
 	public boolean visit(VariableDeclaration node) {
-		identifiers.add(node.getName().toString());
-		if (node.getStartPosition() < filePosition) {
-			if (node.getName() != null) {
-				System.out.println("Variable Declaration >> " + node);
-				final String nodeName = node.getName().toString();
-				CompletionProposal proposal = createProposal(CompletionProposal.LOCAL_VARIABLE_REF, nodeName, nodeName);
-				Scope currentScope = scopes.peek();
-				currentScope.proposals.add(proposal);
-			}
-		}
+		VariableDeclarationIdentifierProposal vProp = new VariableDeclarationIdentifierProposal(node.getName().toString());
+		variableDeclarationIdentifiers.add(vProp);
+//		if (node.getStartPosition() < filePosition) {
+//			if (node.getName() != null) {
+//				System.out.println("Variable Declaration >> " + node);
+//				final String nodeName = node.getName().toString();
+//				CompletionProposal proposal = createProposal(CompletionProposal.LOCAL_VARIABLE_REF, nodeName, nodeName);
+//				Scope currentScope = scopes.peek();
+//				currentScope.proposals.add(proposal);
+//			}
+//		}
 		return true;
 	}
 	

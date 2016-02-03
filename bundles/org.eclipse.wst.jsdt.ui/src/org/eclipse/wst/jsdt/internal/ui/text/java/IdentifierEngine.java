@@ -18,6 +18,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
@@ -32,7 +33,7 @@ public class IdentifierEngine {
 	private CompilationUnitContextType fContextType;
 	
 	/** The result proposals. */
-	private ArrayList<IdentifierProposal> fProposals = new ArrayList<IdentifierProposal>();
+	private ArrayList<ICompletionProposal> fProposals = new ArrayList<ICompletionProposal>();
 	private ScopedCodeAssistVisitor visitor;
 	
 	public IdentifierEngine(CompilationUnitContextType contextType) {
@@ -54,9 +55,21 @@ public class IdentifierEngine {
 		JavaScriptUnit ast = JavaScriptPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_ACTIVE_ONLY, new NullProgressMonitor());
 		
 		ast.accept(visitor);
-		List<String> matchingIdentifiers = getMatchingIdentifiers(visitor.getIdentifiers(), context.getKey());
-		List<IdentifierProposal> identifierProposals = matchingIdentifiers.stream().map(k -> new IdentifierProposal(k, region)).collect(Collectors.toList());
-		fProposals.addAll(identifierProposals);
+		
+		List<VariableDeclarationIdentifierProposal> variableDeclarationIdentifierProposals = visitor.getVariableDeclarationIdentifiers(context.getKey());
+		List<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifierProposals = visitor.getFunctionDeclarationIdentifiers(context.getKey());
+
+		for (VariableDeclarationIdentifierProposal vProp : variableDeclarationIdentifierProposals) {
+			vProp.setRegion(region);
+		}
+		
+		
+		for (FunctionDeclarationIdentifierProposal fProp : functionDeclarationIdentifierProposals) {
+			fProp.setRegion(region);
+		}
+
+		fProposals.addAll(variableDeclarationIdentifierProposals);
+		fProposals.addAll(functionDeclarationIdentifierProposals);
 	}
 
 	public void reset() {
@@ -67,8 +80,8 @@ public class IdentifierEngine {
 	/**
 	 * Returns the array of matching keywords.
 	 */
-	public IdentifierProposal[] getResults() {
-		return fProposals.toArray(new IdentifierProposal[fProposals.size()]);
+	public ICompletionProposal[] getResults() {
+		return fProposals.toArray(new ICompletionProposal[fProposals.size()]);
 	}
 	
 	public List<String> getMatchingIdentifiers(List<String> identifiers, String string) {

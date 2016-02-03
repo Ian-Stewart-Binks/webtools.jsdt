@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
@@ -51,8 +52,8 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 		engine.reset();
 		engine.complete(javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
 		
-		IdentifierProposal[] identifierProposals =  engine.getResults();
-		List<IdentifierProposal> result = new ArrayList<IdentifierProposal>(Arrays.asList(identifierProposals));
+		ICompletionProposal[] identifierProposals =  engine.getResults();
+		List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(Arrays.asList(identifierProposals));
 		
 		return result;
 	}

@@ -22,14 +22,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
-public class IdentifierProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
+public class VariableDeclarationIdentifierProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
 	
 	private String displayString;
 	private IRegion fRegion;
 	private Region fSelectedRegion;
 	
-	public IdentifierProposal(String displayString, IRegion fRegion) {
+	public VariableDeclarationIdentifierProposal(String displayString) {
 		this.displayString = displayString;
+	}
+
+	public void setRegion(IRegion fRegion) {
 		this.fRegion = fRegion;
 	}
 
