@@ -20,4 +20,65 @@ public class ASTHolderCUInfo extends CompilationUnitElementInfo {
 	int reconcileFlags;
 	HashMap problems = null;
 	JavaScriptUnit ast;
+	
+	/**
+	 * @return the astLevel
+	 */
+	public int getAstLevel() {
+		return astLevel;
+	}
+	/**
+	 * @param astLevel the astLevel to set
+	 */
+	public void setAstLevel(int astLevel) {
+		this.astLevel = astLevel;
+	}
+	/**
+	 * @return the resolveBindings
+	 */
+	public boolean isResolveBindings() {
+		return resolveBindings;
+	}
+	/**
+	 * @param resolveBindings the resolveBindings to set
+	 */
+	public void setResolveBindings(boolean resolveBindings) {
+		this.resolveBindings = resolveBindings;
+	}
+	/**
+	 * @return the reconcileFlags
+	 */
+	public int getReconcileFlags() {
+		return reconcileFlags;
+	}
+	/**
+	 * @param reconcileFlags the reconcileFlags to set
+	 */
+	public void setReconcileFlags(int reconcileFlags) {
+		this.reconcileFlags = reconcileFlags;
+	}
+	/**
+	 * @return the problems
+	 */
+	public HashMap getProblems() {
+		return problems;
+	}
+	/**
+	 * @param problems the problems to set
+	 */
+	public void setProblems(HashMap problems) {
+		this.problems = problems;
+	}
+	/**
+	 * @return the ast
+	 */
+	public JavaScriptUnit getAst() {
+		return ast;
+	}
+	/**
+	 * @param ast the ast to set
+	 */
+	public void setAst(JavaScriptUnit ast) {
+		this.ast = ast;
+	}
 }

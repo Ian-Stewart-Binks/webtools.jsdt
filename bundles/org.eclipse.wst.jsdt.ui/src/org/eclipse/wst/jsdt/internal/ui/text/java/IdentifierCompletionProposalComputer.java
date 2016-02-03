@@ -7,11 +7,18 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContextType;
+import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
+import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 /**
  * @author istewart
@@ -19,6 +26,15 @@ import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer;
  */
 public class IdentifierCompletionProposalComputer implements IJavaCompletionProposalComputer {
 
+
+	private IdentifierEngine engine;
+	
+	public IdentifierCompletionProposalComputer() {
+		// TODO: Is TemplateContextType the type we want?
+		CompilationUnitContextType contextType = (CompilationUnitContextType) JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+		engine = new IdentifierEngine(contextType);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer#sessionStarted()
 	 */
@@ -30,8 +46,15 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 	 * @see org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer#computeCompletionProposals(org.eclipse.wst.jsdt.ui.text.java.ContentAssistInvocationContext, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public List computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-		return null;
+		JavaContentAssistInvocationContext javaContext = (JavaContentAssistInvocationContext) context;
+		IJavaScriptUnit unit = javaContext.getCompilationUnit();
+		engine.reset();
+		engine.complete(javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
+		
+		IdentifierProposal[] identifierProposals =  engine.getResults();
+		List<IdentifierProposal> result = new ArrayList<IdentifierProposal>(Arrays.asList(identifierProposals));
+		
+		return result;
 	}
 
 	/* (non-Javadoc)

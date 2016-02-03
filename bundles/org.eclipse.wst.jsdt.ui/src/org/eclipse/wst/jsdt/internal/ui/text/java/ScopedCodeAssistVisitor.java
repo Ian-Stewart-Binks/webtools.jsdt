@@ -35,12 +35,22 @@ import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
  */
 public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
-	private class Scope {
+	private ArrayList<String> identifiers = new ArrayList<String>();
+	
+	public class Scope {
 		ArrayList<CompletionProposal> proposals = new ArrayList<CompletionProposal>(); 
 	}
+	
+	public ArrayList<String> getIdentifiers() {
+		return this.identifiers;
+	}
+	
+	public void clearIdentifierProposals() {
+		this.identifiers.clear();
+	}
 
-	private int filePosition;
-	private Stack<Scope> scopes = new Stack<Scope>();
+	int filePosition;
+	public Stack<Scope> scopes = new Stack<Scope>();
 	
 	public ScopedCodeAssistVisitor(int position) {
 		filePosition = position;
@@ -56,6 +66,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(JavaScriptUnit node) {
+		System.out.println("JavaScriptUnit >>");
 		// Push the global scope.
 		scopes.push(new Scope());
 		return true;
@@ -65,16 +76,17 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	 * @see org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
 	public void endVisit(JavaScriptUnit node) {
+		System.out.println("JavaScriptUnit >>");
 		//Send all the proposals from all scopes
 		for (Scope scope : scopes) {
 			for (CompletionProposal proposal : scope.proposals) {
-				requestor.accept(proposal);
 			}
 		}
 		super.endVisit(node);
 	}
 	
 	public boolean visit(FunctionDeclaration node) {
+		System.out.println("FunctionDeclaration >>");
 		if (node.getStartPosition() < filePosition && node.getName() != null) {
 			final String nodeName = node.getName().toString();
 			CompletionProposal proposal = createProposal(CompletionProposal.METHOD_REF, nodeName, nodeName + "()");
@@ -102,19 +114,23 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(Initializer node) {
+		System.out.println("Initializer >>");
 		return isInside(node);
 	}		
 	
 	public boolean visit(Statement node) {
+		System.out.println("Statement >>");
 		
 		return isInside(node);
 	}
 	
 	public boolean visit(Block node) {
+		System.out.println("block >>");
 		return false;
 	}
 			
 	public boolean visit(VariableDeclaration node) {
+		identifiers.add(node.getName().toString());
 		if (node.getStartPosition() < filePosition) {
 			if (node.getName() != null) {
 				System.out.println("Variable Declaration >> " + node);
@@ -128,6 +144,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(VariableDeclarationStatement node) {
+		System.out.println("VariableDeclarationStatement >> " + node.fragments());
 		visitBackwards(node.fragments());
 		return false;
 	}		
@@ -146,6 +163,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(ForStatement node) {
+		System.out.println("ForStatement >>");
 		if (isInside(node)) {
 			node.getBody().accept(this);
 			visitBackwards(node.initializers());
@@ -162,12 +180,13 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}	
 
 	public boolean visit(TypeDeclarationStatement node) {
+		System.out.println("TypeDeclarationStatement >>");
 		if (node.getStartPosition() + node.getLength() < filePosition) {
 			IBinding binding = node.getDeclaration().getName().resolveBinding();
 			if (binding != null) {
 				CompletionProposal proposal = CompletionProposal.create(CompletionProposal.LOCAL_VARIABLE_REF, filePosition);
 				proposal.setCompletion(binding.getName().toCharArray());
-				requestor.accept(proposal);
+//				requestor.accept(proposal);
 			}
 			return false;
 		}
@@ -177,10 +196,23 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	private void visitBackwards(List<ASTNode> list) {
 		for (int i = list.size() - 1; i >= 0; i--) {
 			ASTNode curr = list.get(i);
-			if (curr.getStartPosition() <  filePosition) {
-				curr.accept(this);
-			}
+			curr.accept(this);
 		}			
+	}
+	
+	private CompletionProposal createProposal(final int kind, final char[] name, final char[] completion) {
+		final CompletionProposal proposal = CompletionProposal.create(kind, filePosition);
+		proposal.setName(name);
+		proposal.setCompletion(completion);
+		scopes.peek().proposals.add(proposal);
+		return proposal;		
+	}
+
+	private CompletionProposal createProposal(final int kind, final String name, final String completion) {
+		if (name == null || completion == null ) {
+			throw new IllegalArgumentException("Completion or Name is missing"); //$NON-NLS-1$
+		}
+		return createProposal(kind, name.toCharArray(), completion.toCharArray());
 	}
 
 }
