@@ -165,7 +165,11 @@ public class FunctionDeclarationIdentifierProposal implements IJavaCompletionPro
 	}
 	
 	private String getParameterString() {
-		return this.parameters.toString();
+		StringBuilder str = new StringBuilder();
+		for (String param : parameters) {
+			str.append(param + ", "); //$NON-NLS-1$
+		}
+		return str.substring(0, str.length() - 2);
 	}
 
 }

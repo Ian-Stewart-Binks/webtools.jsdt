@@ -96,23 +96,24 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	public boolean visit(FunctionDeclaration node) {
 		System.out.println("FunctionDeclaration >>");
-		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), node.parameters());
+		List<String> parameterNames =  (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
+		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), parameterNames);
 		functionDeclarationIdentifiers.add(fProp);
-		
-		if (node.getStartPosition() < filePosition && node.getName() != null) {
-			final String nodeName = node.getName().toString();
-			CompletionProposal proposal = createProposal(CompletionProposal.METHOD_REF, nodeName, nodeName + "()");
-			List parameters = node.parameters();
-			if (parameters != null ) {
-				char[][] parameterNames = new char[parameters.size()][];
-				for (int i = 0; i< parameters.size(); i++) {
-					SingleVariableDeclaration decl = (SingleVariableDeclaration) parameters.get(i);
-					parameterNames[i] = decl.getName().toString().toCharArray(); 
-				}
-				proposal.setParameterNames(parameterNames);
-			}
-			scopes.peek().proposals.add(proposal);
-		}
+//		
+//		if (node.getStartPosition() < filePosition && node.getName() != null) {
+//			final String nodeName = node.getName().toString();
+//			CompletionProposal proposal = createProposal(CompletionProposal.METHOD_REF, nodeName, nodeName + "()");
+//			List parameters = node.parameters();
+//			if (parameters != null ) {
+//				char[][] parameterNames = new char[parameters.size()][];
+//				for (int i = 0; i< parameters.size(); i++) {
+//					SingleVariableDeclaration decl = (SingleVariableDeclaration) parameters.get(i);
+//					parameterNames[i] = decl.getName().toString().toCharArray(); 
+//				}
+//				proposal.setParameterNames(parameterNames);
+//			}
+//			scopes.peek().proposals.add(proposal);
+//		}
 		if (isInside(node)) {
 			Block body = node.getBody();
 			if (body != null) {
