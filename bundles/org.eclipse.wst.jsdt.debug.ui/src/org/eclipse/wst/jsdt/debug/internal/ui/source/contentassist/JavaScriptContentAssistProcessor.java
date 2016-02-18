@@ -21,14 +21,10 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaParameterListValidator;
 import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.KeywordEngine;
-import org.eclipse.wst.jsdt.internal.ui.text.template.contentassist.TemplateEngine;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalCollector;
 import org.eclipse.wst.jsdt.ui.text.java.CompletionProposalComparator;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
@@ -43,8 +39,8 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
 		
 	private CompletionProposalCollector fCollector;
 	private IContextInformationValidator fValidator;
-	private TemplateEngine fJavaEngine;
-	private TemplateEngine fStatementEngine;
+//	private TemplateEngine fJavaEngine;
+//	private TemplateEngine fStatementEngine;
 	private KeywordEngine fKeywordEngine;
 	
     private String fErrorMessage = null;
@@ -55,20 +51,20 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
 		
 	public JavaScriptContentAssistProcessor(ScriptContext context) {
 		fContext = context;
-		TemplateContextType contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
-		if (contextType != null) {
-			fJavaEngine = new TemplateEngine(contextType);
-		}
-		
-		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
-		if (contextType != null) {
-			fStatementEngine = new TemplateEngine(contextType);
-		}
+//		TemplateContextType contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+//		if (contextType != null) {
+//			fJavaEngine = new TemplateEngine(contextType);
+//		}
+//		
+//		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+//		if (contextType != null) {
+//			fStatementEngine = new TemplateEngine(contextType);
+//		}
 
-		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
-		if (contextType != null) {
-			fKeywordEngine = new KeywordEngine(contextType);
-		}
+//		contextType = JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
+//		if (contextType != null) {
+//			fKeywordEngine = new KeywordEngine(contextType);
+//		}
 		
 		fComparator = new CompletionProposalComparator();
 	}
@@ -155,10 +151,10 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
 //			}
 //			
 			if (fKeywordEngine != null) {
-				System.out.println("fKeywordEngine reset"); //$NON-NLS-1$
-				fKeywordEngine.reset();
-				fKeywordEngine.complete(viewer, documentOffset, null);
-				total.addAll(Arrays.asList(fKeywordEngine.getResults()));
+//				System.out.println("fKeywordEngine reset"); //$NON-NLS-1$
+//				fKeywordEngine.reset();
+//				fKeywordEngine.complete(viewer, documentOffset, null);
+//				total.addAll(Arrays.asList(fKeywordEngine.getResults()));
 			} else {
 				System.out.println("fKeywordEngine is null"); //$NON-NLS-1$
 			}

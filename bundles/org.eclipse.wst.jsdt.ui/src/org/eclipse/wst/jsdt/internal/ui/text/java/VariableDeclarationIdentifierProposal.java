@@ -49,7 +49,7 @@ public class VariableDeclarationIdentifierProposal implements IJavaCompletionPro
 	 */
 	public Point getSelection(IDocument document) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Point(fRegion.getOffset() + this.displayString.length(), 0);
 	}
 
 	/* (non-Javadoc)

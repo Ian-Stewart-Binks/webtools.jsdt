@@ -50,7 +50,7 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 		JavaContentAssistInvocationContext javaContext = (JavaContentAssistInvocationContext) context;
 		IJavaScriptUnit unit = javaContext.getCompilationUnit();
 		engine.reset();
-		engine.complete(javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
+		engine.complete(javaContext.getProject(), javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
 		
 		ICompletionProposal[] identifierProposals =  engine.getResults();
 		List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(Arrays.asList(identifierProposals));

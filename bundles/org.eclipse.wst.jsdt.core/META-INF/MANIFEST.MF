@@ -50,8 +50,7 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.launching,
  org.eclipse.wst.jsdt.libraries
 Import-Package: com.ibm.icu.text;version="3.8",
- org.eclipse.jface.text.templates.persistence,
- org.eclipse.wst.jsdt.internal.ui
+ org.eclipse.jface.text.templates.persistence
 Bundle-Activator: org.eclipse.wst.jsdt.core.JavaScriptCore
 Require-Bundle: org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)",
@@ -60,7 +59,7 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.team.core;bundle-version="[3.5.0,4.0.0)";resolution:=optional,
  org.eclipse.debug.core;bundle-version="[3.5.0,4.0.0)"
 Eclipse-LazyStart: true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Main-Class: org.eclipse.wst.jsdt.internal.compiler.batch.Main
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy

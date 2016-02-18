@@ -36,13 +36,14 @@ import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
  */
 public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
+	// TODO: For recently used methods, create new visitor that extends ASTVisitor. Makes sense to cache that.
+	
 	private ArrayList<VariableDeclarationIdentifierProposal> variableDeclarationIdentifiers = new ArrayList<VariableDeclarationIdentifierProposal>();
 	private ArrayList<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifiers = new ArrayList<FunctionDeclarationIdentifierProposal>();
 
 	int filePosition;
 	public Stack<Scope> scopes = new Stack<Scope>();
-	
-	
+
 	public class Scope {
 		ArrayList<CompletionProposal> proposals = new ArrayList<CompletionProposal>(); 
 	}
@@ -71,6 +72,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	private boolean isInside(ASTNode node) {
 		int start = node.getStartPosition();
 		int end = start + node.getLength();
+		
 		return start <= filePosition && filePosition < end;
 	}
 	
@@ -86,35 +88,23 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	 */
 	public void endVisit(JavaScriptUnit node) {
 		System.out.println("JavaScriptUnit >>");
-		//Send all the proposals from all scopes
-		for (Scope scope : scopes) {
-			for (CompletionProposal proposal : scope.proposals) {
-			}
-		}
+//		//Send all the proposals from all scopes
+//		for (Scope scope : scopes) {
+//			for (CompletionProposal proposal : scope.proposals) {
+//			}
+//		}
 		super.endVisit(node);
 	}
 	
 	public boolean visit(FunctionDeclaration node) {
+		// TODO: Fails when no key - just blank completion - doesn't go to end.
 		System.out.println("FunctionDeclaration >>");
-		List<String> parameterNames =  (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
-		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), parameterNames);
+		System.out.println(node.getJavadoc());
+		List<String> parameterNames = (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
+		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), parameterNames, node.getJavadoc());
 		functionDeclarationIdentifiers.add(fProp);
-//		
-//		if (node.getStartPosition() < filePosition && node.getName() != null) {
-//			final String nodeName = node.getName().toString();
-//			CompletionProposal proposal = createProposal(CompletionProposal.METHOD_REF, nodeName, nodeName + "()");
-//			List parameters = node.parameters();
-//			if (parameters != null ) {
-//				char[][] parameterNames = new char[parameters.size()][];
-//				for (int i = 0; i< parameters.size(); i++) {
-//					SingleVariableDeclaration decl = (SingleVariableDeclaration) parameters.get(i);
-//					parameterNames[i] = decl.getName().toString().toCharArray(); 
-//				}
-//				proposal.setParameterNames(parameterNames);
-//			}
-//			scopes.peek().proposals.add(proposal);
-//		}
 		if (isInside(node)) {
+			System.out.println("isInside");
 			Block body = node.getBody();
 			if (body != null) {
 				// New function scope
@@ -123,6 +113,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			}
 			visitBackwards(node.parameters());
 		}
+		// Doesn't recognize anything inside function body.		
 		return false;
 	}
 	
@@ -139,12 +130,15 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	public boolean visit(Block node) {
 		System.out.println("block >>");
-		return false;
+		
+		return true;
 	}
 			
 	public boolean visit(VariableDeclaration node) {
+		// TODO: object literal fields and methods
 		VariableDeclarationIdentifierProposal vProp = new VariableDeclarationIdentifierProposal(node.getName().toString());
 		variableDeclarationIdentifiers.add(vProp);
+		
 //		if (node.getStartPosition() < filePosition) {
 //			if (node.getName() != null) {
 //				System.out.println("Variable Declaration >> " + node);
@@ -191,7 +185,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			node.getIterationVariable().accept(this);
 		}
 		return false;
-	}	
+	}
 
 	public boolean visit(TypeDeclarationStatement node) {
 		System.out.println("TypeDeclarationStatement >>");
@@ -214,19 +208,19 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		}			
 	}
 	
-	private CompletionProposal createProposal(final int kind, final char[] name, final char[] completion) {
-		final CompletionProposal proposal = CompletionProposal.create(kind, filePosition);
-		proposal.setName(name);
-		proposal.setCompletion(completion);
-		scopes.peek().proposals.add(proposal);
-		return proposal;		
-	}
-
-	private CompletionProposal createProposal(final int kind, final String name, final String completion) {
-		if (name == null || completion == null ) {
-			throw new IllegalArgumentException("Completion or Name is missing"); //$NON-NLS-1$
-		}
-		return createProposal(kind, name.toCharArray(), completion.toCharArray());
-	}
+//	private CompletionProposal createProposal(final int kind, final char[] name, final char[] completion) {
+//		final CompletionProposal proposal = CompletionProposal.create(kind, filePosition);
+//		proposal.setName(name);
+//		proposal.setCompletion(completion);
+//		scopes.peek().proposals.add(proposal);
+//		return proposal;		
+//	}
+//
+//	private CompletionProposal createProposal(final int kind, final String name, final String completion) {
+//		if (name == null || completion == null ) {
+//			throw new IllegalArgumentException("Completion or Name is missing"); //$NON-NLS-1$
+//		}
+//		return createProposal(kind, name.toCharArray(), completion.toCharArray());
+//	}
 
 }

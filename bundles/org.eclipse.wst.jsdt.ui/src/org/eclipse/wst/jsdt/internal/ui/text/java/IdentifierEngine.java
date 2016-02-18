@@ -20,6 +20,8 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.wst.jsdt.core.CompletionProposal;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CompilationUnitContext;
@@ -39,10 +41,9 @@ public class IdentifierEngine {
 	public IdentifierEngine(CompilationUnitContextType contextType) {
 		Assert.isNotNull(contextType);
 		fContextType = contextType;
-		visitor = new ScopedCodeAssistVisitor(1);
 	}
 
-	public void complete(ITextViewer viewer, int completionPosition, IJavaScriptUnit compilationUnit) {
+	public void complete(IJavaScriptProject project, ITextViewer viewer, int completionPosition, IJavaScriptUnit compilationUnit) {
 	    IDocument document = viewer.getDocument();
 		Point selection = viewer.getSelectedRange();
 		Position position = new Position(completionPosition, selection.y);
@@ -54,11 +55,13 @@ public class IdentifierEngine {
 		
 		JavaScriptUnit ast = JavaScriptPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_ACTIVE_ONLY, new NullProgressMonitor());
 		
+		visitor = new ScopedCodeAssistVisitor(completionPosition);
 		ast.accept(visitor);
 		
 		List<VariableDeclarationIdentifierProposal> variableDeclarationIdentifierProposals = visitor.getVariableDeclarationIdentifiers(context.getKey());
 		List<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifierProposals = visitor.getFunctionDeclarationIdentifiers(context.getKey());
 
+		
 		for (VariableDeclarationIdentifierProposal vProp : variableDeclarationIdentifierProposals) {
 			vProp.setRegion(region);
 		}
@@ -66,6 +69,9 @@ public class IdentifierEngine {
 		
 		for (FunctionDeclarationIdentifierProposal fProp : functionDeclarationIdentifierProposals) {
 			fProp.setRegion(region);
+			fProp.setProject(project);
+			CompletionProposal completionProposal = CompletionProposal.create(CompletionProposal.METHOD_REF, region.getOffset());
+			fProp.setProposalInfo(new MethodProposalInfo(project, completionProposal));
 		}
 
 		fProposals.addAll(variableDeclarationIdentifierProposals);
@@ -73,7 +79,7 @@ public class IdentifierEngine {
 	}
 
 	public void reset() {
-		visitor.clearIdentifierProposals();
+//		visitor.clearIdentifierProposals();
 		fProposals.clear();
 	}
 
