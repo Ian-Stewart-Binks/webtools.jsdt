@@ -102,9 +102,9 @@ public class HTMLPrinter {
 
 	public static void insertPageProlog(StringBuffer buffer, int position, RGB bgRGB, URL styleSheetURL) {
 
-		if (bgRGB == null)
+		if (bgRGB == null) {
 			insertPageProlog(buffer, position, styleSheetURL);
-		else {
+		} else {
 			StringBuffer pageProlog= new StringBuffer(300);
 
 			pageProlog.append("<html>"); //$NON-NLS-1$
@@ -118,6 +118,7 @@ public class HTMLPrinter {
 			buffer.insert(position,  pageProlog.toString());
 		}
 	}
+	
 	public static void insertPageProlog(StringBuffer buffer, int position, RGB bgRGB, String styleSheet) {
 		
 		if (bgRGB == null)

@@ -105,6 +105,7 @@ public class FunctionDeclarationIdentifierProposal implements IJavaCompletionPro
      */
     @Override
     public String getAdditionalProposalInfo() {
+    	System.out.println("getAdditionalProposalInfo >>");
 		CompletionProposal completionProposal = CompletionProposal.create(CompletionProposal.METHOD_REF, fRegion.getOffset());
 		setProposalInfo(new MethodProposalInfo(jsProject, completionProposal));
         Object info = getAdditionalProposalInfo2(new NullProgressMonitor());
@@ -115,6 +116,14 @@ public class FunctionDeclarationIdentifierProposal implements IJavaCompletionPro
 	 * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getAdditionalProposalInfo()
 	 */
 	private String getAdditionalProposalInfo2(IProgressMonitor monitor) {
+		if (getProposalInfo() != null) {
+			String info = getProposalInfo().getInfo(monitor);
+			if (info != null && info.length() > 0) {
+				System.out.println("Success for JSDoc");
+			}
+		}
+		
+		
 //		System.out.println(this.JSDoc.replace("\n", ));
 //		
 //        if (getProposalInfo() != null) {

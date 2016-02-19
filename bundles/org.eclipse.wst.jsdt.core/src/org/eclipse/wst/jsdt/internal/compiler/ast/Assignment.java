@@ -37,7 +37,7 @@ public class Assignment extends Expression implements IAssignment {
 
 	public Expression lhs;
 	public Expression expression;
-	public Javadoc javadoc;
+	public JsDoc javadoc;
 	public InferredType inferredType;
 
 	/**

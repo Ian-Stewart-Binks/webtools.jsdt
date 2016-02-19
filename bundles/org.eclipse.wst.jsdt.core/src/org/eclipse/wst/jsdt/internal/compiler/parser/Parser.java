@@ -81,7 +81,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteralMinValue;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
@@ -307,7 +307,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 	protected boolean recordStringLiterals;
 
 	// javadoc
-	public Javadoc javadoc;
+	public JsDoc javadoc;
 	public JavadocParser javadocParser;
 	// used for recovery
 	protected int lastJavadocEnd;

@@ -60,12 +60,10 @@ public class IdentifierEngine {
 		
 		List<VariableDeclarationIdentifierProposal> variableDeclarationIdentifierProposals = visitor.getVariableDeclarationIdentifiers(context.getKey());
 		List<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifierProposals = visitor.getFunctionDeclarationIdentifiers(context.getKey());
-
 		
 		for (VariableDeclarationIdentifierProposal vProp : variableDeclarationIdentifierProposals) {
 			vProp.setRegion(region);
 		}
-		
 		
 		for (FunctionDeclarationIdentifierProposal fProp : functionDeclarationIdentifierProposals) {
 			fProp.setRegion(region);
@@ -79,7 +77,6 @@ public class IdentifierEngine {
 	}
 
 	public void reset() {
-//		visitor.clearIdentifierProposals();
 		fProposals.clear();
 	}
 

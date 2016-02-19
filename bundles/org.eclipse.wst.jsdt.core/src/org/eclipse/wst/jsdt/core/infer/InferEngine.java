@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
@@ -387,7 +387,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		}
 
 		if(localDeclaration.getJsDoc() != null) {
-			Javadoc javadoc = (Javadoc) localDeclaration.getJsDoc();
+			JsDoc javadoc = (JsDoc) localDeclaration.getJsDoc();
 			createTypeIfNecessary(javadoc);
 			InferredAttribute attribute = null;
 			if(javadoc.memberOf != null) {
@@ -449,7 +449,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		popContext();
 	}
 
-	private void createTypeIfNecessary(Javadoc javadoc) {
+	private void createTypeIfNecessary(JsDoc javadoc) {
 		if(javadoc.memberOf != null) {
 			char[][] namespace = {};
 			char[][] typeName = javadoc.memberOf.getTypeName();
@@ -1003,7 +1003,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				type = addType(possibleTypeName, true);
 			}
 			if(type == null && methodDeclaration.getJsDoc() != null
-					&& ((Javadoc) methodDeclaration.getJsDoc()).isConstructor) {
+					&& ((JsDoc) methodDeclaration.getJsDoc()).isConstructor) {
 				type = addType(possibleTypeName, true);
 				handleJSDocConstructor(type, methodDeclaration, assignment.sourceStart());
 			}
@@ -1141,7 +1141,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				type = addType(possibleTypeName, true);
 			}
 			if(type == null && methodDeclaration.getJsDoc() != null
-					&& ((Javadoc) methodDeclaration.getJsDoc()).isConstructor) {
+					&& ((JsDoc) methodDeclaration.getJsDoc()).isConstructor) {
 
 				type = addType(possibleTypeName, true);
 				handleJSDocConstructor(type, methodDeclaration, localDeclaration.sourceStart());
@@ -1419,7 +1419,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				int nameStart = (int) (fieldReference.nameSourcePosition >>> 32);
 
 				InferredType typeOf =
-						(assignment.getJsDoc() != null && assignment.getJsDoc() instanceof Javadoc && ((Javadoc) assignment.getJsDoc()).returnType != null) ? this.addType(changePrimitiveToObject(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName()))
+						(assignment.getJsDoc() != null && assignment.getJsDoc() instanceof JsDoc && ((JsDoc) assignment.getJsDoc()).returnType != null) ? this.addType(changePrimitiveToObject(((JsDoc) assignment.getJsDoc()).returnType.getFullTypeName()))
 								: getTypeOf(assignment.getExpression());
 				IFunctionDeclaration methodDecl = null;
 
@@ -1530,16 +1530,16 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				if(methodDecl != null) {
 					newType.addMethod(memberName, methodDecl, nameStart);
 					if(methodDecl.getInferredType() == null && assignment.getJsDoc() != null
-							&& ((Javadoc) assignment.getJsDoc()).returnType != null) {
-						if(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
-							methodDecl.setInferredType(addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName()));
+							&& ((JsDoc) assignment.getJsDoc()).returnType != null) {
+						if(((JsDoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
+							methodDecl.setInferredType(addType(((JsDoc) assignment.getJsDoc()).returnType.getFullTypeName()));
 					}
 				} else {
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment, nameStart);
 					if(attribute.type == null && assignment.getJsDoc() != null
-							&& ((Javadoc) assignment.getJsDoc()).returnType != null) {
-						if(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
-							attribute.type = addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName());
+							&& ((JsDoc) assignment.getJsDoc()).returnType != null) {
+						if(((JsDoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
+							attribute.type = addType(((JsDoc) assignment.getJsDoc()).returnType.getFullTypeName());
 					}
 					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart = assignment.getExpression().sourceStart();
@@ -1944,7 +1944,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					} else
 						continue; // not supporting this case right now
 
-					Javadoc javaDoc = (Javadoc) field.getJsDoc();
+					JsDoc javaDoc = (JsDoc) field.getJsDoc();
 					InferredType returnType = null;
 					if(javaDoc != null) {
 						if(javaDoc.memberOf != null) {
@@ -2177,7 +2177,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		if(passNumber == 1) {
 			if(methodDeclaration.getJsDoc() != null) {
 				InferredMethod method = null;
-				Javadoc javadoc = (Javadoc) methodDeclaration.getJsDoc();
+				JsDoc javadoc = (JsDoc) methodDeclaration.getJsDoc();
 				createTypeIfNecessary(javadoc);
 				if(javadoc.isConstructor) {
 					InferredType type;
@@ -2262,7 +2262,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	protected void handleJSDocConstructor(InferredType type, IFunctionDeclaration methodDeclaration, int nameStart) {
-		Javadoc javadoc = (Javadoc) methodDeclaration.getJsDoc();
+		JsDoc javadoc = (JsDoc) methodDeclaration.getJsDoc();
 		type.setIsDefinition(true);
 		type.addConstructorMethod(type.name, methodDeclaration, nameStart);
 
@@ -2274,9 +2274,9 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 	
 	protected void handleFunctionDeclarationArguments(IFunctionDeclaration methodDeclaration, IJsDoc jsdoc) {
-		if(jsdoc == null || !(jsdoc instanceof Javadoc))
+		if(jsdoc == null || !(jsdoc instanceof JsDoc))
 			return;
-		Javadoc javadoc = (Javadoc) jsdoc;
+		JsDoc javadoc = (JsDoc) jsdoc;
 
 		IArgument[] arguments = methodDeclaration.getArguments();
 		if(arguments != null) {
@@ -2313,8 +2313,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				 * http://code.google.com/p/jsdoc-toolkit/wiki/InlineDocs
 				 **/
 				else if(arguments[i].getJsDoc() != null) {
-					if(((Javadoc) arguments[i].getJsDoc()).returnType != null) {
-						paramType = this.addType(((Javadoc) arguments[i].getJsDoc()).returnType.getFullTypeName());
+					if(((JsDoc) arguments[i].getJsDoc()).returnType != null) {
+						paramType = this.addType(((JsDoc) arguments[i].getJsDoc()).returnType.getFullTypeName());
 					}
 				} else if(arguments[i].getComment() != null) {
 					char[] comment = CharOperation.trim(arguments[i].getComment());

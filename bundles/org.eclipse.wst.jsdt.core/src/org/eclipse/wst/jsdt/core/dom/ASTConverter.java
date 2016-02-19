@@ -1728,7 +1728,7 @@ class ASTConverter {
 		return literal;
 	}
 
-	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc javadoc, BodyDeclaration bodyDeclaration) {
+	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc javadoc, BodyDeclaration bodyDeclaration) {
 		if (bodyDeclaration.getJavadoc() == null) {
 			if (javadoc != null) {
 				if (this.commentMapper == null || !this.commentMapper.hasSameTable(this.commentsTable)) {
@@ -1751,7 +1751,7 @@ class ASTConverter {
 		}
 	}
 
-	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc javadoc, VariableDeclarationStatement variable) {
+	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc javadoc, VariableDeclarationStatement variable) {
 		if (variable.getJavadoc() == null) {
 			if (javadoc != null) {
 				if (this.commentMapper == null || !this.commentMapper.hasSameTable(this.commentsTable)) {
@@ -1774,7 +1774,7 @@ class ASTConverter {
 		}
 	}
 
-	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc javadoc, PackageDeclaration packageDeclaration) {
+	public void convert(org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc javadoc, PackageDeclaration packageDeclaration) {
 		if (ast.apiLevel == AST.JLS3 && packageDeclaration.getJavadoc() == null) {
 			if (javadoc != null) {
 				if (this.commentMapper == null || !this.commentMapper.hasSameTable(this.commentsTable)) {
@@ -3157,7 +3157,7 @@ class ASTConverter {
 		this.ast.getBindingResolver().store(node, oldASTNode);
 	}
 
-	protected void recordNodes(org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc javadoc, TagElement tagElement) {
+	protected void recordNodes(org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc javadoc, TagElement tagElement) {
 		Iterator fragments = tagElement.fragments().listIterator();
 		while (fragments.hasNext()) {
 			ASTNode node = (ASTNode) fragments.next();

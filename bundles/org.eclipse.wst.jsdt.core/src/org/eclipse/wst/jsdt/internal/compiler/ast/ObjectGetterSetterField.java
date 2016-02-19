@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class ObjectGetterSetterField extends ObjectLiteralField implements IExpression {
 
 	public Statement[] statements;
-	public Javadoc javaDoc;
+	public JsDoc javaDoc;
 	public boolean isSetter;
 	public Expression varName;
 

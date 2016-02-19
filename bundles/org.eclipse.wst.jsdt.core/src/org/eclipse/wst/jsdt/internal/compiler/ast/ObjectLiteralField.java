@@ -27,7 +27,7 @@ public class ObjectLiteralField extends Expression implements IObjectLiteralFiel
 
 	public Expression fieldName;
 	public Expression initializer;
-	public Javadoc  javaDoc;
+	public JsDoc  javaDoc;
 
 	public ObjectLiteralField(Expression field, Expression value, int start, int end) {
 
