@@ -120,7 +120,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		try {
 			// Init scanner position
 			this.linePtr = getLineNumber(this.firstTagPosition);
-			int realStart = this.linePtr==1 ? javadocStart : this.scanner.getLineEnd(this.linePtr-1)+1;
+			int realStart = this.linePtr == 1 ? javadocStart : this.scanner.getLineEnd(this.linePtr - 1) + 1;
 			if (realStart < javadocStart) realStart = javadocStart;
 			this.scanner.resetTo(realStart, javadocEnd);
 			this.index = realStart;
@@ -224,7 +224,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 									if (isDomParser) {
 										createTag();
 									}
-									this.textStart = this.tagSourceEnd+1;
+									this.textStart = this.tagSourceEnd + 1;
 									invalidTagLineEnd  = this.lineEnd;
 								}
 							} catch (InvalidInputException e) {

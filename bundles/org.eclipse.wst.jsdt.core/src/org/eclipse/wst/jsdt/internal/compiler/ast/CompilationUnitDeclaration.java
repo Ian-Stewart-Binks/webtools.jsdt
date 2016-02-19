@@ -89,7 +89,7 @@ public class CompilationUnitDeclaration
 
 	public boolean isPropagatingInnerClassEmulation;
 
-	public JsDoc javadoc; // 1.5 addition for package-info.js
+	public JsDocNode javadoc; // 1.5 addition for package-info.js
 
 	public NLSTag[] nlsTags;
 	private StringLiteral[] stringLiterals;

@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArrayQualifiedTypeReference;
@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 public class JavadocParser extends AbstractCommentParser {
 
 	// Public fields
-	public JsDoc docComment;
+	public JsDocNode docComment;
 
 	// bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51600
 	// Store param references for tag with invalid syntax
@@ -104,7 +104,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 		// Init javadoc if necessary
 		if (this.checkDocComment) {
-			this.docComment = new JsDoc(javadocStart, javadocEnd);
+			this.docComment = new JsDocNode(javadocStart, javadocEnd);
 		} else {
 			this.docComment = null;
 		}

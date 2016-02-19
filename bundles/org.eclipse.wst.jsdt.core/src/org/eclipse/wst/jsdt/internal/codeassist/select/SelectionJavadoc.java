@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.internal.codeassist.select;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 /**
  * Node representing a Javadoc comment including code selection.
  */
-public class SelectionJavadoc extends JsDoc {
+public class SelectionJavadoc extends JsDocNode {
 
 	Expression selectedNode;
 

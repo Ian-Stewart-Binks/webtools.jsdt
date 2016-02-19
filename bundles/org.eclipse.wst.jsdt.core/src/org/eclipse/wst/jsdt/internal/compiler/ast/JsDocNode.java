@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
  * Node representing a structured Javadoc comment
  * @deprecated
  */
-public class JsDoc extends ASTNode implements IJsDoc {
+public class JsDocNode extends ASTNode implements IJsDoc {
 
 	public JavadocSingleNameReference[] paramReferences; // @param
 	public TypeReference[] exceptionReferences; // @throws, @exception
@@ -56,7 +56,7 @@ public class JsDoc extends ASTNode implements IJsDoc {
 	public boolean isConstructor;
 
 
-	public JsDoc(int sourceStart, int sourceEnd) {
+	public JsDocNode(int sourceStart, int sourceEnd) {
 		this.sourceStart = sourceStart;
 		this.sourceEnd = sourceEnd;
 	}

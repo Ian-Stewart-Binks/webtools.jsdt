@@ -199,6 +199,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * 
 	 */
 	private IInformationControlCreator fCreator;
+
 	/**
 	 * The CSS used to format javadoc information.
 	 * 

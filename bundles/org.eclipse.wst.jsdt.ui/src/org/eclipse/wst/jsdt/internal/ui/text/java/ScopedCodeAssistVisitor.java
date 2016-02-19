@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
@@ -123,7 +124,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}		
 	
 	public boolean visit(Statement node) {
-		System.out.println("Statement >>");
+		System.out.println("Statement >>" + node.toString());
 		
 		return isInside(node);
 	}
@@ -135,10 +136,14 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 			
 	public boolean visit(VariableDeclaration node) {
+		System.out.println("VariableDeclaration >> " + node);
+		System.out.println("VariableDeclaration >> " + node.getBodyChild());
+		System.out.println("VariableDeclaration >> " + node.properties());
+		
 		// TODO: object literal fields and methods
 		VariableDeclarationIdentifierProposal vProp = new VariableDeclarationIdentifierProposal(node.getName().toString());
 		variableDeclarationIdentifiers.add(vProp);
-		
+		visit(node.getBodyChild());
 //		if (node.getStartPosition() < filePosition) {
 //			if (node.getName() != null) {
 //				System.out.println("Variable Declaration >> " + node);
@@ -153,11 +158,14 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	public boolean visit(VariableDeclarationStatement node) {
 		System.out.println("VariableDeclarationStatement >> " + node.fragments());
+		System.out.println("VariableDeclarationStatement >> " + node.properties());
+		System.out.println("");
 		visitBackwards(node.fragments());
 		return false;
 	}		
 	
 	public boolean visit(VariableDeclarationExpression node) {
+		System.out.println("VariableDeclarationExpression >> " + node.fragments());
 		visitBackwards(node.fragments());
 		return false;
 	}
@@ -168,7 +176,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			node.getException().accept(this);
 		}
 		return false;			
-	}
+	}	
 	
 	public boolean visit(ForStatement node) {
 		System.out.println("ForStatement >>");
@@ -185,6 +193,11 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			node.getIterationVariable().accept(this);
 		}
 		return false;
+	}
+	
+	public boolean visit(ObjectLiteral node) {
+		System.out.println("ObjectLiteral");
+		return true;
 	}
 
 	public boolean visit(TypeDeclarationStatement node) {

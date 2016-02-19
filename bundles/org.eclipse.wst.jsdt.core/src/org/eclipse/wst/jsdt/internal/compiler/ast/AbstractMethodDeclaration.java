@@ -89,7 +89,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 	public boolean resolveChildStatments = true;
 	public boolean hasResolvedChildStatements = false;
 
-	public JsDoc javadoc;
+	public JsDocNode javadoc;
 
 	public int bodyStart;
 	public int bodyEnd = -1;

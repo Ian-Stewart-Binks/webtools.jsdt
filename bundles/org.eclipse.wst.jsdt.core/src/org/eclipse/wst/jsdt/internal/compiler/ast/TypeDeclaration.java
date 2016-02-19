@@ -72,7 +72,7 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 	public int bodyEnd; // doesn't include the trailing comment if any.
 	public CompilationResult compilationResult;
 	public MethodDeclaration[] missingAbstractMethods;
-	public JsDoc javadoc;
+	public JsDocNode javadoc;
 
 	public QualifiedAllocationExpression allocation; // for anonymous only
 	public TypeDeclaration enclosingType; // for member types only

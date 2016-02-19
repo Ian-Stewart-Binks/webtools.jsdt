@@ -10,7 +10,6 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -106,22 +105,17 @@ public class FunctionDeclarationIdentifierProposal implements IJavaCompletionPro
     @Override
     public String getAdditionalProposalInfo() {
     	System.out.println("getAdditionalProposalInfo >>");
-		CompletionProposal completionProposal = CompletionProposal.create(CompletionProposal.METHOD_REF, fRegion.getOffset());
-		setProposalInfo(new MethodProposalInfo(jsProject, completionProposal));
-        Object info = getAdditionalProposalInfo2(new NullProgressMonitor());
-        return info == null ? null : info.toString();
+//		CompletionProposal completionProposal = CompletionProposal.create(CompletionProposal.METHOD_REF, fRegion.getOffset());
+//		setProposalInfo(new MethodProposalInfo(jsProject, completionProposal));
+//        Object info = getAdditionalProposalInfo2(new NullProgressMonitor());
+        return prettyPrintJsDoc();
     }
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getAdditionalProposalInfo()
 	 */
 	private String getAdditionalProposalInfo2(IProgressMonitor monitor) {
-		if (getProposalInfo() != null) {
-			String info = getProposalInfo().getInfo(monitor);
-			if (info != null && info.length() > 0) {
-				System.out.println("Success for JSDoc");
-			}
-		}
+		return prettyPrintJsDoc();
 		
 		
 //		System.out.println(this.JSDoc.replace("\n", ));
@@ -157,7 +151,16 @@ public class FunctionDeclarationIdentifierProposal implements IJavaCompletionPro
 //                    return info; //new JSdocBrowserInformationControlInput(null, element, info, 0);
 //            }
 //    }
-    return null;
+	}
+	
+	private String prettyPrintJsDoc() {
+//		StringBuilder description = new StringBuilder();
+//		
+//		for (char c : this.JSDoc.toString().toCharArray()) {
+//			prettyJsDoc.append(c);
+//		}
+		
+		return this.JSDoc.tags().toString();
 	}
 
 	public String getDisplayString() {

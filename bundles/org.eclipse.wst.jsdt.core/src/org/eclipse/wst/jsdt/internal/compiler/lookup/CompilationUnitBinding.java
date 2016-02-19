@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDoc;
+import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
@@ -114,11 +114,11 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 					return false;
 				}
 
-				public boolean visit(JsDoc javadoc, BlockScope scope) {	// not possible to contain method
+				public boolean visit(JsDocNode javadoc, BlockScope scope) {	// not possible to contain method
 					return false;
 				}
 
-				public boolean visit(JsDoc javadoc, ClassScope scope) { // not possible to contain method
+				public boolean visit(JsDocNode javadoc, ClassScope scope) { // not possible to contain method
 					return false;
 				}
 

@@ -44,10 +44,10 @@ class DocCommentParser extends AbstractCommentParser {
 	}
 
 	public JSdoc parse(int[] positions) {
-		return parse(positions[0], positions[1]-positions[0]);
+		return parse(positions[0], positions[1] - positions[0]);
 	}
-	public JSdoc parse(int start, int length) {
 
+	public JSdoc parse(int start, int length) {
 		// Init
 		this.source = this.scanner.source;
 		this.lineEnds = this.scanner.lineEnds;
@@ -56,7 +56,7 @@ class DocCommentParser extends AbstractCommentParser {
 		// Parse
 		if (this.checkDocComment) {
 			this.javadocStart = start;
-			this.javadocEnd = start+length-1;
+			this.javadocEnd = start + length - 1;
 			this.firstTagPosition = this.javadocStart;
 			commentParse();
 		}
@@ -128,7 +128,8 @@ class DocCommentParser extends AbstractCommentParser {
 				throw new InvalidInputException();
 		}
 	}
-/* (non-Javadoc)
+
+	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#createFieldReference()
 	 */
 	protected Object createFieldReference(Object receiver) throws InvalidInputException {
@@ -156,6 +157,7 @@ class DocCommentParser extends AbstractCommentParser {
 				throw new InvalidInputException();
 		}
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#createMethodReference(java.lang.Object[])
 	 */
@@ -215,7 +217,7 @@ class DocCommentParser extends AbstractCommentParser {
 			TagElement previousTag = null;
 			if (this.astPtr == -1) {
 				previousTag = this.ast.newTagElement();
-				previousTag.setSourceRange(start, this.tagSourceEnd-start+1);
+				previousTag.setSourceRange(start, this.tagSourceEnd - start + 1);
 				pushOnAstStack(previousTag, true);
 			} else {
 				previousTag = (TagElement) this.astStack[this.astPtr];
@@ -340,7 +342,7 @@ class DocCommentParser extends AbstractCommentParser {
 			this.tagSourceEnd = this.scanner.getCurrentTokenEndPosition();
 			tagName = this.scanner.getCurrentIdentifierSource();
 		} else {
-			this.tagSourceEnd = currentPosition-1;
+			this.tagSourceEnd = currentPosition - 1;
 		}
 
 		// Try to get tag name other than javaScript identifier
@@ -382,7 +384,7 @@ class DocCommentParser extends AbstractCommentParser {
 			}
 		}
 		int length = tagName.length;
-		this.index = this.tagSourceEnd+1;
+		this.index = this.tagSourceEnd + 1;
 		this.scanner.currentPosition = this.tagSourceEnd+1;
 		this.tagSourceStart = previousPosition;
 
@@ -567,6 +569,7 @@ class DocCommentParser extends AbstractCommentParser {
 		pushOnAstStack(paramTag, true);
 		return true;
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#pushSeeRef(java.lang.Object)
 	 */
@@ -600,6 +603,7 @@ class DocCommentParser extends AbstractCommentParser {
 		}
 		return true;
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#pushText(int, int)
 	 */
@@ -634,6 +638,7 @@ class DocCommentParser extends AbstractCommentParser {
 		previousTag.setSourceRange(previousStart, end-previousStart);
 		this.textStart = -1;
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#pushText(int, int)
 	 */
@@ -653,6 +658,7 @@ class DocCommentParser extends AbstractCommentParser {
 			}
 		}
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.AbstractCommentParser#pushThrowName(java.lang.Object)
 	 */

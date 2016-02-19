@@ -34,7 +34,7 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 	public Expression initialization;
 	public int modifiers;
 	public int modifiersSourceStart;
-	public JsDoc javadoc;
+	public JsDocNode javadoc;
 
 
 	public InferredType inferredType;
