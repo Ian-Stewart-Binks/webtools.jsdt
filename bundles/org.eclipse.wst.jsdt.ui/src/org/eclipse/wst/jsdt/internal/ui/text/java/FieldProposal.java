@@ -7,9 +7,6 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -25,19 +22,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
-public class VariableDeclarationIdentifierProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
+public class FieldProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
 	
 	private String displayString;
 	private IRegion fRegion;
 	private Region fSelectedRegion;
-	private List<String> fields;
 	
-	public VariableDeclarationIdentifierProposal(String displayString) {
+	public FieldProposal(String displayString, IRegion fRegion) {
 		this.displayString = displayString;
-		this.fields = new ArrayList<String>();
-	}
-
-	public void setRegion(IRegion fRegion) {
 		this.fRegion = fRegion;
 	}
 
@@ -46,7 +38,6 @@ public class VariableDeclarationIdentifierProposal implements IJavaCompletionPro
 	 */
 	public void apply(IDocument document) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/* (non-Javadoc)
@@ -163,14 +154,6 @@ public class VariableDeclarationIdentifierProposal implements IJavaCompletionPro
 	public int getRelevance() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-	
-	public void addField(String field) {
-		this.fields.add(field);
-	}
-	
-	public List<String> getFields() {
-		return this.fields;
 	}
 	
 }

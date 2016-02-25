@@ -14,21 +14,86 @@ import java.util.stream.Collectors;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BlockComment;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionExpression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionRefParameter;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InferredType;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
+import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.LineComment;
+import org.eclipse.wst.jsdt.core.dom.ListExpression;
+import org.eclipse.wst.jsdt.core.dom.MemberRef;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
+import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.QualifiedType;
+import org.eclipse.wst.jsdt.core.dom.RegularExpressionLiteral;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.ThisExpression;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
+import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
+import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
 
 /**
@@ -41,12 +106,18 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	private ArrayList<VariableDeclarationIdentifierProposal> variableDeclarationIdentifiers = new ArrayList<VariableDeclarationIdentifierProposal>();
 	private ArrayList<FunctionDeclarationIdentifierProposal> functionDeclarationIdentifiers = new ArrayList<FunctionDeclarationIdentifierProposal>();
-
+	
+	private Stack<VariableDeclarationIdentifierProposal> variableStack = new Stack<VariableDeclarationIdentifierProposal>();
+	
 	int filePosition;
 	public Stack<Scope> scopes = new Stack<Scope>();
 
 	public class Scope {
 		ArrayList<CompletionProposal> proposals = new ArrayList<CompletionProposal>(); 
+	}
+
+	public List<VariableDeclarationIdentifierProposal> getVariableDeclarationIdentifiers() {
+		return variableDeclarationIdentifiers;
 	}
 	
 	public List<VariableDeclarationIdentifierProposal> getVariableDeclarationIdentifiers(String key) {
@@ -83,7 +154,341 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		scopes.push(new Scope());
 		return true;
 	}
+
+	public boolean visit(AnonymousClassDeclaration node) {
+		System.out.println("AnonymousClassDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(ArrayAccess node) {
+		System.out.println("ArrayAccess >>");
+		return true;
+	}
+
+	public boolean visit(ArrayCreation node) {
+		System.out.println("ArrayCreation >>");
+		return true;
+	}
+
+	public boolean visit(ArrayInitializer node) {
+		System.out.println("ArrayInitializer >>");
+		return true;
+	}
+
+	public boolean visit(ArrayType node) {
+		System.out.println("ArrayType >>");
+		return true;
+	}
+
+	public boolean visit(Assignment node) {
+		System.out.println("Assignment >>");
+		return true;
+	}
+
+	public boolean visit(BlockComment node) {
+		System.out.println("BlockComment >>");
+		return true;
+	}
+
+	public boolean visit(BooleanLiteral node) {
+		System.out.println("BooleanLiteral >>");
+		return true;
+	}
+
+	public boolean visit(BreakStatement node) {
+		System.out.println("BreakStatement >>");
+		return true;
+	}
+
+	public boolean visit(CharacterLiteral node) {
+		System.out.println("CharacterLiteral >>");
+		return true;
+	}
+
+	public boolean visit(RegularExpressionLiteral node) {
+		System.out.println("RegularExpressionLiteral >>");
+		return true;
+	}
+
+	public boolean visit(ClassInstanceCreation node) {
+		System.out.println("ClassInstanceCreation >>");
+		return true;
+	}
+
+	public boolean visit(ConditionalExpression node) {
+		System.out.println("ConditionalExpression >>");
+		return true;
+	}
+
+	public boolean visit(ConstructorInvocation node) {
+		System.out.println("ConstructorInvocation >>");
+		return true;
+	}
+
+	public boolean visit(ContinueStatement node) {
+		System.out.println("ContinueStatement >>");
+		return true;
+	}
+
+	public boolean visit(DoStatement node) {
+		System.out.println("DoStatement >>");
+		return true;
+	}
+
+	public boolean visit(EmptyStatement node) {
+		System.out.println("EmptyStatement >>");
+		return true;
+	}
+
+	public boolean visit(EnhancedForStatement node) {
+		System.out.println("EnhancedForStatement >>");
+		return true;
+	}
+
+	public boolean visit(ExpressionStatement node) {
+		System.out.println("ExpressionStatement >>" + node);
+		return true;
+	}
+
+	public boolean visit(FieldAccess node) {
+		System.out.println("FieldAccess >>");
+		return true;
+	}
+
+	public boolean visit(FieldDeclaration node) {
+		System.out.println("FieldDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(IfStatement node) {
+		System.out.println("IfStatement >>");
+		return true;
+	}
+
+	public boolean visit(ImportDeclaration node) {
+		System.out.println("ImportDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(InferredType node) {
+		System.out.println("InferredType >>");
+		return true;
+	}
+
+	public boolean visit(InfixExpression node) {
+		System.out.println("InfixExpression >>");
+		return true;
+	}
+
+	public boolean visit(InstanceofExpression node) {
+		System.out.println("InstanceofExpression >>");
+		return true;
+	}
+
+	public boolean visit(LabeledStatement node) {
+		System.out.println("LabeledStatement >>");
+		return true;
+	}
+
+	public boolean visit(LineComment node) {
+		System.out.println("LineComment >>");
+		return true;
+	}
+
+	public boolean visit(ListExpression node) {
+		System.out.println("ListExpression >>");
+		return true;
+	}
+
+	public boolean visit(MemberRef node) {
+		System.out.println("MemberRef >>");
+		return true;
+	}
+
+	public boolean visit(FunctionRef node) {
+		System.out.println("FunctionRef >>");
+		return true;
+	}
+
+	public boolean visit(FunctionRefParameter node) {
+		System.out.println("FunctionRefParameter >>");
+		return true;
+	}
+
+	public boolean visit(FunctionInvocation node) {
+		System.out.println("FunctionInvocation >>");
+		return true;
+	}
+
+	public boolean visit(Modifier node) {
+		System.out.println("Modifier >>");
+		return true;
+	}
+
+	public boolean visit(NullLiteral node) {
+		System.out.println("NullLiteral >>");
+		return true;
+	}
+
+	public boolean visit(UndefinedLiteral node) {
+		System.out.println("UndefinedLiteral >>");
+		return true;
+	}
+
+	public boolean visit(NumberLiteral node) {
+		System.out.println("NumberLiteral >>");
+		return true;
+	}
+
+	public boolean visit(PackageDeclaration node) {
+		System.out.println("PackageDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(ParenthesizedExpression node) {
+		System.out.println("ParenthesizedExpression >>");
+		return true;
+	}
+
+	public boolean visit(PostfixExpression node) {
+		System.out.println("PostfixExpression >>");
+		return true;
+	}
+
+	public boolean visit(PrefixExpression node) {
+		System.out.println("PrefixExpression >>");
+		return true;
+	}
+
+	public boolean visit(PrimitiveType node) {
+		System.out.println("PrimitiveType >>");
+		return true;
+	}
+
+	public boolean visit(QualifiedName node) {
+		System.out.println("QualifiedName >>");
+		return true;
+	}
+
+	public boolean visit(QualifiedType node) {
+		System.out.println("QualifiedType >>");
+		return true;
+	}
+
+	public boolean visit(ReturnStatement node) {
+		System.out.println("ReturnStatement >>");
+		return true;
+	}
+
+	public boolean visit(SimpleName node) {
+		System.out.println("SimpleName >>");
+		return true;
+	}
+
+	public boolean visit(SimpleType node) {
+		System.out.println("SimpleType >>");
+		return true;
+	}
+
+	public boolean visit(SingleVariableDeclaration node) {
+		System.out.println("SingleVariableDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(StringLiteral node) {
+		System.out.println("StringLiteral >>");
+		return true;
+	}
+
+	public boolean visit(SuperConstructorInvocation node) {
+		System.out.println("SuperConstructorInvocation >>");
+		return true;
+	}
+
+	public boolean visit(SuperFieldAccess node) {
+		System.out.println("SuperFieldAccess >>");
+		return true;
+	}
+
+	public boolean visit(SuperMethodInvocation node) {
+		System.out.println("SuperMethodInvocation >>");
+		return true;
+	}
+
+	public boolean visit(SwitchCase node) {
+		System.out.println("SwitchCase >>");
+		return true;
+	}
+
+	public boolean visit(SwitchStatement node) {
+		System.out.println("SwitchStatement >>");
+		return true;
+	}
+
+	public boolean visit(TagElement node) {
+		System.out.println("TagElement >>");
+		return true;
+	}
+
+
+	public boolean visit(TextElement node) {
+		System.out.println("TextElement >>");
+		return true;
+	}
+
+	public boolean visit(ThisExpression node) {
+		System.out.println("ThisExpression >>");
+		return true;
+	}
+
+	public boolean visit(ThrowStatement node) {
+		System.out.println("ThrowStatement >>");
+		return true;
+	}
+
+	public boolean visit(TryStatement node) {
+		System.out.println("TryStatement >>");
+		return true;
+	}
+
+	public boolean visit(TypeDeclaration node) {
+		System.out.println("TypeDeclaration >>");
+		return true;
+	}
+
+	public boolean visit(TypeLiteral node) {
+		System.out.println("TypeLiteral >>");
+		return true;
+	}
+
+	public boolean visit(VariableDeclarationFragment node) {
+		System.out.println("VariableDeclarationFragment >>");
+		VariableDeclarationIdentifierProposal vProp = new VariableDeclarationIdentifierProposal(node.getName().toString());
+		variableDeclarationIdentifiers.add(vProp);
+		variableStack.push(vProp);
+		return true;
+	}
 	
+	public void endVisit(VariableDeclarationFragment node) {
+		variableStack.pop();
+	}
+
+	public boolean visit(WhileStatement node) {
+		System.out.println("WhileStatement >>");
+		return true;
+	}
+
+	public boolean visit(WithStatement node) {
+		System.out.println("WithStatement >>");
+		return true;
+	}
+
+	public boolean visit(FunctionExpression node) {
+		System.out.println("FunctionExpression >>");
+		return true;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
@@ -98,14 +503,24 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(FunctionDeclaration node) {
-		// TODO: Fails when no key - just blank completion - doesn't go to end.
-		System.out.println("FunctionDeclaration >>");
-		System.out.println(node.getJavadoc());
+		if (node.getName() == null) {
+			if (isInside(node)) {
+				Block body = node.getBody();
+				if (body != null) {
+					// New function scope
+					scopes.push(new Scope());
+					body.accept(this);
+				}
+				visitBackwards(node.parameters());
+			}
+			return false;
+		}
+		
+		System.out.println("FunctionDeclaration >>" + node);
 		List<String> parameterNames = (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
 		FunctionDeclarationIdentifierProposal fProp = new FunctionDeclarationIdentifierProposal(node.getName().toString(), parameterNames, node.getJavadoc());
 		functionDeclarationIdentifiers.add(fProp);
 		if (isInside(node)) {
-			System.out.println("isInside");
 			Block body = node.getBody();
 			if (body != null) {
 				// New function scope
@@ -114,6 +529,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			}
 			visitBackwards(node.parameters());
 		}
+		
 		// Doesn't recognize anything inside function body.		
 		return false;
 	}
@@ -126,7 +542,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	public boolean visit(Statement node) {
 		System.out.println("Statement >>" + node.toString());
 		
-		return isInside(node);
+		return true;
 	}
 	
 	public boolean visit(Block node) {
@@ -137,13 +553,9 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			
 	public boolean visit(VariableDeclaration node) {
 		System.out.println("VariableDeclaration >> " + node);
-		System.out.println("VariableDeclaration >> " + node.getBodyChild());
-		System.out.println("VariableDeclaration >> " + node.properties());
 		
 		// TODO: object literal fields and methods
-		VariableDeclarationIdentifierProposal vProp = new VariableDeclarationIdentifierProposal(node.getName().toString());
-		variableDeclarationIdentifiers.add(vProp);
-		visit(node.getBodyChild());
+//		visit(node.getBodyChild());
 //		if (node.getStartPosition() < filePosition) {
 //			if (node.getName() != null) {
 //				System.out.println("Variable Declaration >> " + node);
@@ -158,7 +570,6 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	
 	public boolean visit(VariableDeclarationStatement node) {
 		System.out.println("VariableDeclarationStatement >> " + node.fragments());
-		System.out.println("VariableDeclarationStatement >> " + node.properties());
 		System.out.println("");
 		visitBackwards(node.fragments());
 		return false;
@@ -176,7 +587,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			node.getException().accept(this);
 		}
 		return false;			
-	}	
+	}
 	
 	public boolean visit(ForStatement node) {
 		System.out.println("ForStatement >>");
@@ -196,7 +607,15 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(ObjectLiteral node) {
-		System.out.println("ObjectLiteral");
+		System.out.println("ObjectLiteral >> " + node);
+		return true;
+	}
+	
+	public boolean visit(ObjectLiteralField node) {
+		System.out.println("ObjectLiteralField >>  " + node.getParent().getParent());
+		System.out.println("ObjectLiteralField >> " + this.variableDeclarationIdentifiers.get(this.variableDeclarationIdentifiers.size() - 1).getDisplayString());
+		System.out.println("ObjectLiteralField >> " + node);
+		variableStack.peek().addField(node.getFieldName().toString());
 		return true;
 	}
 
