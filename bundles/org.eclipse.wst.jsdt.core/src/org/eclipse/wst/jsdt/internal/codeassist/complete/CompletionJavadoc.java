@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 /**
  * Node representing a Javadoc comment including code selection.
  */
-public class CompletionJavadoc extends JsDocNode {
+public class CompletionJavadoc extends Javadoc {
 
 	Expression completionNode;
 

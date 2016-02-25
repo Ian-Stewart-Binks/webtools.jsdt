@@ -50,7 +50,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArrayQualifiedTypeReference;
@@ -262,10 +262,10 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public void endVisit(IntLiteral intLiteral, BlockScope scope) {
 		visitor.endVisit(intLiteral);
 	}
-	public void endVisit(JsDocNode javadoc, BlockScope scope) {
+	public void endVisit(Javadoc javadoc, BlockScope scope) {
 		visitor.endVisit(javadoc);
 	}
-	public void endVisit(JsDocNode javadoc, ClassScope scope) {
+	public void endVisit(Javadoc javadoc, ClassScope scope) {
 		visitor.endVisit(javadoc);
 	}
 	public void endVisit(JavadocAllocationExpression expression, BlockScope scope) {
@@ -634,10 +634,10 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public boolean visit(IntLiteral intLiteral, BlockScope scope) {
 		return visitor.visit(intLiteral);
 	}
-	public boolean visit(JsDocNode javadoc, BlockScope scope) {
+	public boolean visit(Javadoc javadoc, BlockScope scope) {
 		return visitor.visit(javadoc);
 	}
-	public boolean visit(JsDocNode javadoc, ClassScope scope) {
+	public boolean visit(Javadoc javadoc, ClassScope scope) {
 		return visitor.visit(javadoc);
 	}
 	public boolean visit(JavadocAllocationExpression expression, BlockScope scope) {

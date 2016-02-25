@@ -18,7 +18,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Point;
@@ -44,10 +43,8 @@ public class MemberEngine {
 	}
 
 	public void complete(IJavaScriptProject project, ITextViewer viewer, int completionPosition, IJavaScriptUnit compilationUnit) {
-		System.out.println("Member completion >> ");
 	    IDocument document = viewer.getDocument();
 		Point selection = viewer.getSelectedRange();
-		Position position = new Position(completionPosition, selection.y);
 
 		if (!isMemberAccess(document, completionPosition)) {
 			return;

@@ -81,7 +81,7 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JsDocNode;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 
 public class GenericVisitor extends ASTVisitor {
 	
@@ -92,8 +92,8 @@ public class GenericVisitor extends ASTVisitor {
 	/**
 	 * @param visitJavadocTags <code>true</code> if doc comment tags are
 	 * to be visited by default, and <code>false</code> otherwise
-	 * @see JsDocNode#tags()
-	 * @see #visit(JsDocNode)
+	 * @see Javadoc#tags()
+	 * @see #visit(Javadoc)
 	 * @since 3.0
 	 */
 	public GenericVisitor(boolean visitJavadocTags) {

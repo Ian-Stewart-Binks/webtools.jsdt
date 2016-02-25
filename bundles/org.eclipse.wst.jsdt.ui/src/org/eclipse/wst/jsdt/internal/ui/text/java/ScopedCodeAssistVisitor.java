@@ -612,9 +612,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 	
 	public boolean visit(ObjectLiteralField node) {
-		System.out.println("ObjectLiteralField >>  " + node.getParent().getParent());
-		System.out.println("ObjectLiteralField >> " + this.variableDeclarationIdentifiers.get(this.variableDeclarationIdentifiers.size() - 1).getDisplayString());
-		System.out.println("ObjectLiteralField >> " + node);
+		System.out.println("ObjectLiteralField >> " + node.getFieldName());
 		variableStack.peek().addField(node.getFieldName().toString());
 		return true;
 	}
