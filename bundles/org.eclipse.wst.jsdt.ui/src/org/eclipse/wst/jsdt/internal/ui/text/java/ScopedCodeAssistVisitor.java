@@ -385,6 +385,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		return true;
 	}
 
+	public void endVisit(SimpleName node) {
+		System.out.println("SimpleName <<");
+	}
+
 	public boolean visit(SimpleType node) {
 		System.out.println("SimpleType >>");
 		return true;
@@ -532,6 +536,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		
 		// Doesn't recognize anything inside function body.		
 		return false;
+	}
+	
+	public void endVisit(FunctionDeclaration node) {
+		System.out.println("FunctionDeclaration <<");
 	}
 	
 	public boolean visit(Initializer node) {

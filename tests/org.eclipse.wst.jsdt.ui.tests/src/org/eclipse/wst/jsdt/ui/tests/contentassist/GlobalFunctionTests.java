@@ -93,161 +93,161 @@ public class GlobalFunctionTests extends TestCase {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 0, 1, expectedProposals);
 	}
 
-	public void testFindFunctions_OtherFile_BeforeOpen_ExpressionStarted_1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
-				"funcFive(Number paramOne, String paramTwo) : String - Global",
-				"funcSix(paramOne, String paramTwo) : Number - Global",
-				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
-				"funcNine(paramOne) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 2, 4, expectedProposals);
-	}
-
-	public void testFindFunctions_OtherFile_BeforeOpen_ExpressionStarted_2() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 4, 5, expectedProposals);
-	}
-
-	public void testFindFunctions_ThisFile_EmptyLine() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 54, 0, expectedProposals);
-	}
-
-	public void testFindFunctions_ThisFile_ExpressionStarted_0() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
-				"funcFive(Number paramOne, String paramTwo) : String - Global",
-				"funcSix(paramOne, String paramTwo) : Number - Global",
-				"funcSeven(String paramOne, paramTwo) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 57, 1, expectedProposals);
-	}
-
-	public void testFindFunctions_ThisFile_ExpressionStarted_1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
-				"funcFive(Number paramOne, String paramTwo) : String - Global",
-				"funcSix(paramOne, String paramTwo) : Number - Global",
-				"funcSeven(String paramOne, paramTwo) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 59, 4, expectedProposals);
-	}
-
-	public void testFindFunctions_ThisFile_ExpressionStarted_2() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 61, 5, expectedProposals);
-	}
-
-	public void testFindFunctions_OtherFile_AftereOpen_ExpressionStarted_0() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
-				"funcFive(Number paramOne, String paramTwo) : String - Global",
-				"funcSix(paramOne, String paramTwo) : Number - Global",
-				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
-				"funcNine(paramOne) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 0, 1, expectedProposals);
-	}
-
-	public void testFindFunctions_OtherFile_AfterOpen_ExpressionStarted_1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
-				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
-				"funcFive(Number paramOne, String paramTwo) : String - Global",
-				"funcSix(paramOne, String paramTwo) : Number - Global",
-				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
-				"funcNine(paramOne) : Number - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 2, 4, expectedProposals);
-	}
-
-	public void testFindFunctions_OtherFile_AfterOpen_ExpressionStarted_2() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 4, 5, expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionNotStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionStarted1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionNotStarted_NegativeTest()
-			throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
-				expectedProposals, true, false);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionStarted1_NegativeTest()
-			throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
-				expectedProposals, true, false);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 8, 0,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 10, 1,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted_NegativeTest() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 8, 0,
-				expectedProposals, true, false);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1_NegativeTest() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 10, 1,
-				expectedProposals, true, false);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_AftereOpen_ExpressionNotStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionStarted1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
-				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
-				expectedProposals);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionNotStarted_NegativeTest()
-			throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
-				expectedProposals, true, false);
-	}
-
-	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionStarted1_NegativeTest()
-			throws Exception {
-		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
-				expectedProposals, true, false);
-	}
-	
-	public void testFindFunctions_OtherFile_FromJAR_0() throws Exception {
-		String[][] expectedProposals = new String[][] { {
-				"t(args) - Global"
-		} };
-		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test14_0.js", 0, 1, expectedProposals);
-	}
+//	public void testFindFunctions_OtherFile_BeforeOpen_ExpressionStarted_1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
+//				"funcFive(Number paramOne, String paramTwo) : String - Global",
+//				"funcSix(paramOne, String paramTwo) : Number - Global",
+//				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
+//				"funcNine(paramOne) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 2, 4, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_OtherFile_BeforeOpen_ExpressionStarted_2() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 4, 5, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_ThisFile_EmptyLine() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 54, 0, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_ThisFile_ExpressionStarted_0() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
+//				"funcFive(Number paramOne, String paramTwo) : String - Global",
+//				"funcSix(paramOne, String paramTwo) : Number - Global",
+//				"funcSeven(String paramOne, paramTwo) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 57, 1, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_ThisFile_ExpressionStarted_1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
+//				"funcFive(Number paramOne, String paramTwo) : String - Global",
+//				"funcSix(paramOne, String paramTwo) : Number - Global",
+//				"funcSeven(String paramOne, paramTwo) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 59, 4, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_ThisFile_ExpressionStarted_2() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 61, 5, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_OtherFile_AftereOpen_ExpressionStarted_0() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
+//				"funcFive(Number paramOne, String paramTwo) : String - Global",
+//				"funcSix(paramOne, String paramTwo) : Number - Global",
+//				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
+//				"funcNine(paramOne) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 0, 1, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_OtherFile_AfterOpen_ExpressionStarted_1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcOne() - Global", "funcTwo() : String - Global",
+//				"funcThree(paramOne) - Global", "funcFour(paramOne, paramTwo) : Number - Global",
+//				"funcFive(Number paramOne, String paramTwo) : String - Global",
+//				"funcSix(paramOne, String paramTwo) : Number - Global",
+//				"funcSeven(String paramOne, paramTwo) : Number - Global", "funcEight(paramOne) : String - Global",
+//				"funcNine(paramOne) : Number - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 2, 4, expectedProposals);
+//	}
+//
+//	public void testFindFunctions_OtherFile_AfterOpen_ExpressionStarted_2() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "funcTwo() : String - Global", "funcThree(paramOne) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_1.js", 4, 5, expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionNotStarted() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionStarted1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionNotStarted_NegativeTest()
+//			throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
+//				expectedProposals, true, false);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_BeforeOpen_ExpressionStarted1_NegativeTest()
+//			throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
+//				expectedProposals, true, false);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 8, 0,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 10, 1,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted_NegativeTest() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 8, 0,
+//				expectedProposals, true, false);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1_NegativeTest() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_0.js", 10, 1,
+//				expectedProposals, true, false);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_AftereOpen_ExpressionNotStarted() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionStarted1() throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1 : Function - Global", "foo1(param2) - Global",
+//				"foo2 : Function - Global", "foo2(param3, param4) - Global" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
+//				expectedProposals);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionNotStarted_NegativeTest()
+//			throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 0, 0,
+//				expectedProposals, true, false);
+//	}
+//
+//	public void testNamedFunctionsAssignedToVariables_OtherFile_AfterOpen_ExpressionStarted1_NegativeTest()
+//			throws Exception {
+//		String[][] expectedProposals = new String[][] { { "foo1Ignored", "foo2Ignored" } };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestNamedFunctionsAssignedToVariables_1.js", 2, 1,
+//				expectedProposals, true, false);
+//	}
+//	
+//	public void testFindFunctions_OtherFile_FromJAR_0() throws Exception {
+//		String[][] expectedProposals = new String[][] { {
+//				"t(args) - Global"
+//		} };
+//		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test14_0.js", 0, 1, expectedProposals);
+//	}
 }

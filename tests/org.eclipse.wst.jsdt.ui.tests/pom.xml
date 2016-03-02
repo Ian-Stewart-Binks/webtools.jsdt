@@ -27,7 +27,7 @@
   
   <properties>
   	<testSuite>${project.artifactId}</testSuite>
-  	<testClass>org.eclipse.wst.jsdt.ui.tests.JSDTUITests</testClass>
+  	<testClass>org.eclipse.wst.jsdt.ui.tests.contentassist.refactor.KeywordTests</testClass>
   </properties>
   
   <build>

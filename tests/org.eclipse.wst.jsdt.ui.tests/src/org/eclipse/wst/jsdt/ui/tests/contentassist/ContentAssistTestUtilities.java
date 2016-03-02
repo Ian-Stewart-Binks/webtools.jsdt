@@ -88,6 +88,11 @@ public class ContentAssistTestUtilities {
 
 		ICompletionProposal[][] pages = getProposals(testProject, filePath, lineNum, lineRelativeCharOffset,
 				expectedProposals.length);
+		for (ICompletionProposal[] c : pages) {
+			for (ICompletionProposal f : c) {
+				System.out.println(f.getDisplayString());
+			}
+		}
 		verifyExpectedProposal(pages, expectedProposals, negativeTest, exactMatch, false);
 	}
 	
@@ -177,6 +182,13 @@ public class ContentAssistTestUtilities {
 	private static ICompletionProposal[][] getProposals(TestProjectSetup testProject, String filePath, int lineNum, int lineRelativeCharOffset,
 			int numOfPages) throws Exception {
 
+		System.out.println("Here >> " + testProject);
+		System.out.println(testProject.getProject());
+		System.out.println("Mark >> ");
+		if (!testProject.getProject().exists()) {
+			System.out.println("getProposals >> Null project");
+		}
+		
 		IFile file = testProject.getFile(filePath);
 		JavaEditor editor = testProject.getEditor(file);
 		IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
