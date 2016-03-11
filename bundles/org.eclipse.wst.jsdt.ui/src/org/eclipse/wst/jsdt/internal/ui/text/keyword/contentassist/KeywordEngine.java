@@ -33,6 +33,7 @@ public class KeywordEngine {
 	}
 
 	public void complete(ITextViewer viewer, int completionPosition, IJavaScriptUnit compilationUnit) {
+		reset();
 		IDocument document = viewer.getDocument();
 		Point selection = viewer.getSelectedRange();
 		Position position = new Position(completionPosition, selection.y);
