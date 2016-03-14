@@ -49,7 +49,6 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocPara
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocTag;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnKeyword;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnLocalName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAccess;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSend;
@@ -1447,11 +1446,6 @@ public final class CompletionEngine
 
 				findVariableNames(this.completionToken, variable.type, discouragedNames, forbiddenNames, kind, variable.modifiers);
 			}
-		} else if (astNode instanceof CompletionOnKeyword) {
-			if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-				CompletionOnKeyword keyword = (CompletionOnKeyword)astNode;
-				findKeywords(keyword.getToken(), keyword.getPossibleKeywords(), keyword.canCompleteEmptyToken(), false);
-			}
 		} else if(astNode instanceof CompletionOnBrankStatementLabel) {
 			if (!this.requestor.isIgnored(CompletionProposal.LABEL_REF)) {
 				CompletionOnBrankStatementLabel label = (CompletionOnBrankStatementLabel) astNode;
@@ -1891,21 +1885,6 @@ public final class CompletionEngine
 									if(DEBUG) {
 										this.printDebug(this.problem);
 									}
-								}
-							}
-							return;
-						} else if(importReference instanceof CompletionOnKeyword) {
-							contextAccepted = true;
-							this.buildContext(importReference, null, null, null);
-							if(!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-								setSourceRange(importReference.sourceStart, importReference.sourceEnd);
-								CompletionOnKeyword keyword = (CompletionOnKeyword)importReference;
-								findKeywords(keyword.getToken(), keyword.getPossibleKeywords(), false, false);
-							}
-							if(this.noProposal && this.problem != null) {
-								this.requestor.completionFailure(this.problem);
-								if(DEBUG) {
-									this.printDebug(this.problem);
 								}
 							}
 							return;
