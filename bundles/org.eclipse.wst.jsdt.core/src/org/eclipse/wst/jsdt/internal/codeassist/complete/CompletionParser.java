@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IThisReference;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.Keywords;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -1061,31 +1060,8 @@ private boolean checkClassLiteralAccess() {
 	}
 	return false;
 }
-private boolean checkKeyword() {
-	return false;
-}
-private boolean checkInstanceofKeyword() {
-	if(isInsideMethod()) {
-		int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-		int index;
-		if(kind != K_BLOCK_DELIMITER
-			&& (index = indexOfAssistIdentifier()) > -1
-			&& expressionPtr > -1
-			&& expressionLengthStack[expressionPtr] == 1) {
 
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
-			if(identifierStack[ptr].length > 0 && CharOperation.prefixEquals(identifierStack[ptr], Keywords.INSTANCEOF)) {
-				this.lastCheckPoint = assistNode.sourceEnd + 1;
-				this.isOrphanCompletionNode = true;
-				return true;
-			}
-			if(identifierStack[ptr].length > 0 && CharOperation.prefixEquals(identifierStack[ptr], Keywords.TYPEOF)) {
-				this.lastCheckPoint = assistNode.sourceEnd + 1;
-				this.isOrphanCompletionNode = true;
-				return true;
-			}
-		}
-	}
+private boolean checkInstanceofKeyword() {
 	return false;
 }
 /**
@@ -1388,7 +1364,6 @@ private boolean checkRecoveredType() {
 public void completionIdentifierCheck(){
 	//if (assistNode != null) return;
 
-	if (checkKeyword()) return;
 	if (checkRecoveredType()) return;
 	if (checkRecoveredMethod()) return;
 
@@ -1519,7 +1494,7 @@ protected void consumeEnterVariable() {
 
 		// recovery
 		if (currentElement != null) {
-			if(!checkKeyword() && !(currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).statementCount == 0)) {
+			if(!(currentElement instanceof RecoveredUnit && ((RecoveredUnit)currentElement).statementCount == 0)) {
 				int nameSourceStart = (int)(identifierPositionStack[identifierPtr] >>> 32);
 				intPtr--;
 //				pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
@@ -2402,90 +2377,82 @@ public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentif
 }
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-		boolean canBeExplicitConstructorCall = false;
-			char[][] keywords = new char[Keywords.COUNT][];
-			int count = 0;
+	boolean canBeExplicitConstructorCall = false;
+	char[][] keywords = new char[Keywords.COUNT][];
+	int count = 0;
 
-//			if((lastModifiers & ClassFileConstants.AccStatic) == 0) {
-//				keywords[count++]= Keywords.SUPER;
-				keywords[count++]= Keywords.THIS;
-//			}
-			keywords[count++]= Keywords.NEW;
+	keywords[count++]= Keywords.THIS;
+	keywords[count++]= Keywords.NEW;
 
-			if(kind == K_BLOCK_DELIMITER || kind==0) {
-				if(canBeExplicitConstructor == YES) {
-					canBeExplicitConstructorCall = true;
-				}
+	if (kind == K_BLOCK_DELIMITER || kind == 0) {
+		if(canBeExplicitConstructor == YES) {
+			canBeExplicitConstructorCall = true;
+		}
 
-//				keywords[count++]= Keywords.ASSERT;
-				keywords[count++]= Keywords.DO;
-				keywords[count++]= Keywords.FOR;
-				keywords[count++]= Keywords.IF;
-				keywords[count++]= Keywords.RETURN;
-				keywords[count++]= Keywords.SWITCH;
-//				keywords[count++]= Keywords.SYNCHRONIZED;
-				keywords[count++]= Keywords.THROW;
-				keywords[count++]= Keywords.TRY;
-				keywords[count++]= Keywords.WHILE;
-				keywords[count++]= Keywords.VAR;
-				keywords[count++]= Keywords.FUNCTION;
-				keywords[count++]= Keywords.DELETE;
-				keywords[count++]= Keywords.TYPEOF;
+		keywords[count++]= Keywords.DO;
+		keywords[count++]= Keywords.FOR;
+		keywords[count++]= Keywords.IF;
+		keywords[count++]= Keywords.RETURN;
+		keywords[count++]= Keywords.SWITCH;
+		keywords[count++]= Keywords.THROW;
+		keywords[count++]= Keywords.TRY;
+		keywords[count++]= Keywords.WHILE;
+		keywords[count++]= Keywords.VAR;
+		keywords[count++]= Keywords.FUNCTION;
+		keywords[count++]= Keywords.DELETE;
+		keywords[count++]= Keywords.TYPEOF;
 
-//				keywords[count++]= Keywords.FINAL;
-//				keywords[count++]= Keywords.CLASS;
-
-				if(previousKind == K_BLOCK_DELIMITER) {
-					switch (previousInfo) {
-						case IF :
-							keywords[count++]= Keywords.ELSE;
-							break;
-						case CATCH :
-							keywords[count++]= Keywords.CATCH;
-							keywords[count++]= Keywords.FINALLY;
-							break;
-					}
-				}
-				if(isInsideLoop()) {
-					keywords[count++]= Keywords.CONTINUE;
-				}
-				if(isInsideBreakable()) {
-					keywords[count++]= Keywords.BREAK;
-				}
-			} else if(kind != K_BETWEEN_CASE_AND_COLON && kind != K_BETWEEN_DEFAULT_AND_COLON) {
-				keywords[count++]= Keywords.TRUE;
-				keywords[count++]= Keywords.FALSE;
-				keywords[count++]= Keywords.NULL;
-				keywords[count++]= Keywords.UNDEFINED;
-				keywords[count++]= Keywords.FUNCTION;
-
-				if(kind == K_SWITCH_LABEL) {
-					if(topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) != DEFAULT) {
-						keywords[count++]= Keywords.DEFAULT;
-					}
-					keywords[count++]= Keywords.BREAK;
-					keywords[count++]= Keywords.CASE;
-					keywords[count++]= Keywords.DO;
-					keywords[count++]= Keywords.FOR;
-					keywords[count++]= Keywords.IF;
-					keywords[count++]= Keywords.RETURN;
-					keywords[count++]= Keywords.SWITCH;
-//					keywords[count++]= Keywords.SYNCHRONIZED;
-					keywords[count++]= Keywords.THROW;
-					keywords[count++]= Keywords.TRY;
-					keywords[count++]= Keywords.WHILE;
-					keywords[count++]= Keywords.VAR;
-					keywords[count++]= Keywords.FUNCTION;
-					keywords[count++]= Keywords.DELETE;
-					keywords[count++]= Keywords.TYPEOF;
-					if(isInsideLoop()) {
-						keywords[count++]= Keywords.CONTINUE;
-				}							
-					}
+		if (previousKind == K_BLOCK_DELIMITER) {
+			switch (previousInfo) {
+				case IF :
+					keywords[count++]= Keywords.ELSE;
+					break;
+				case CATCH :
+					keywords[count++]= Keywords.CATCH;
+					keywords[count++]= Keywords.FINALLY;
+					break;
 			}
-			System.arraycopy(keywords, 0 , keywords = new char[count][], 0, count);
+		}
+		if (isInsideLoop()) {
+			keywords[count++]= Keywords.CONTINUE;
+		}
+		if (isInsideBreakable()) {
+			keywords[count++]= Keywords.BREAK;
+		}
+	} else if (kind != K_BETWEEN_CASE_AND_COLON && kind != K_BETWEEN_DEFAULT_AND_COLON) {
+		keywords[count++]= Keywords.TRUE;
+		keywords[count++]= Keywords.FALSE;
+		keywords[count++]= Keywords.NULL;
+		keywords[count++]= Keywords.UNDEFINED;
+		keywords[count++]= Keywords.FUNCTION;
 
-			return new CompletionOnSingleNameReference(assistName, position, keywords, canBeExplicitConstructorCall, isInsideAttributeValue());
+		if (kind == K_SWITCH_LABEL) {
+			if (topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) != DEFAULT) {
+				keywords[count++]= Keywords.DEFAULT;
+			}
+			keywords[count++]= Keywords.BREAK;
+			keywords[count++]= Keywords.CASE;
+			keywords[count++]= Keywords.DO;
+			keywords[count++]= Keywords.FOR;
+			keywords[count++]= Keywords.IF;
+			keywords[count++]= Keywords.RETURN;
+			keywords[count++]= Keywords.SWITCH;
+			keywords[count++]= Keywords.THROW;
+			keywords[count++]= Keywords.TRY;
+			keywords[count++]= Keywords.WHILE;
+			keywords[count++]= Keywords.VAR;
+			keywords[count++]= Keywords.FUNCTION;
+			keywords[count++]= Keywords.DELETE;
+			keywords[count++]= Keywords.TYPEOF;
+			
+			if (isInsideLoop()) {
+				keywords[count++]= Keywords.CONTINUE;
+			}							
+		}
+	}
+	System.arraycopy(keywords, 0 , keywords = new char[count][], 0, count);
+
+	return new CompletionOnSingleNameReference(assistName, position, keywords, canBeExplicitConstructorCall, isInsideAttributeValue());
 }
 
 public TypeReference createSingleAssistTypeReference(char[] assistName, long position) {
@@ -2514,12 +2481,12 @@ protected StringLiteral createStringLiteral(char[] token, int start, int end, in
 		int pos = contentStart;
 		if(source[pos] == '\"') {
 			contentStart = pos + 1;
-		} else if(source[pos] == '\\' && source[pos+1] == 'u') {
+		} else if (source[pos] == '\\' && source[pos+1] == 'u') {
 			pos += 2;
 			while (source[pos] == 'u') {
 				pos++;
 			}
-			if(source[pos] == 0 && source[pos + 1] == 0 && source[pos + 2] == 2 && source[pos + 3] == 2) {
+			if (source[pos] == 0 && source[pos + 1] == 0 && source[pos + 2] == 2 && source[pos + 3] == 2) {
 				contentStart = pos + 4;
 			}
 		}
@@ -2527,23 +2494,23 @@ protected StringLiteral createStringLiteral(char[] token, int start, int end, in
 		pos = contentEnd;
 		if(source[pos] == '\"') {
 			contentEnd = pos - 1;
-		} else if(source.length > 5 && source[pos-4] == 'u') {
-			if(source[pos - 3] == 0 && source[pos - 2] == 0 && source[pos - 1] == 2 && source[pos] == 2) {
+		} else if (source.length > 5 && source[pos-4] == 'u') {
+			if (source[pos - 3] == 0 && source[pos - 2] == 0 && source[pos - 1] == 2 && source[pos] == 2) {
 				pos -= 5;
 				while (pos > -1 && source[pos] == 'u') {
 					pos--;
 				}
-				if(pos > -1 && source[pos] == '\\') {
+				if (pos > -1 && source[pos] == '\\') {
 					contentEnd = pos - 1;
 				}
 			}
 		}
 
-		if(contentEnd < start) {
+		if (contentEnd < start) {
 			contentEnd = end;
 		}
 
-		if(this.cursorLocation != end || end == contentEnd) {
+		if (this.cursorLocation != end || end == contentEnd) {
 			CompletionOnStringLiteral stringLiteral = new CompletionOnStringLiteral(
 					token,
 					start,
@@ -2572,7 +2539,6 @@ protected TypeReference copyDims(TypeReference typeRef, int dim) {
 	return result;
 }
 public CompilationUnitDeclaration dietParse(ICompilationUnit sourceUnit, CompilationResult compilationResult, int cursorLoc) {
-
 	this.cursorLocation = cursorLoc;
 	CompletionScanner completionScanner = (CompletionScanner)this.scanner;
 	completionScanner.completionIdentifier = null;
