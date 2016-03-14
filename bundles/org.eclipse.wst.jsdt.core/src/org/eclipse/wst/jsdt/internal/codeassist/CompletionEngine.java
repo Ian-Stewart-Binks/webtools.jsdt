@@ -981,8 +981,7 @@ public final class CompletionEngine
 					null,
 					new ObjectVector());
 			}
-		}
-		else if (astNode instanceof CompletionOnQualifiedNameReference) {
+		} else if (astNode instanceof CompletionOnQualifiedNameReference) {
 
 			this.insideQualifiedReference = true;
 			CompletionOnQualifiedNameReference ref =
