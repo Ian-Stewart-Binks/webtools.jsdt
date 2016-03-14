@@ -1111,7 +1111,6 @@ private boolean checkKeyword() {
 			if(count != 0) {
 				System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 
-				this.assistNode = new CompletionOnKeyword2(ident, pos, keywords);
 				this.lastCheckPoint = assistNode.sourceEnd + 1;
 				this.isOrphanCompletionNode = true;
 				return true;
@@ -1131,19 +1130,11 @@ private boolean checkInstanceofKeyword() {
 
 			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
 			if(identifierStack[ptr].length > 0 && CharOperation.prefixEquals(identifierStack[ptr], Keywords.INSTANCEOF)) {
-				this.assistNode = new CompletionOnKeyword3(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.INSTANCEOF);
 				this.lastCheckPoint = assistNode.sourceEnd + 1;
 				this.isOrphanCompletionNode = true;
 				return true;
 			}
 			if(identifierStack[ptr].length > 0 && CharOperation.prefixEquals(identifierStack[ptr], Keywords.TYPEOF)) {
-				this.assistNode = new CompletionOnKeyword3(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.TYPEOF);
 				this.lastCheckPoint = assistNode.sourceEnd + 1;
 				this.isOrphanCompletionNode = true;
 				return true;
@@ -1470,24 +1461,8 @@ private void classHeaderExtendsOrImplements(boolean isInterface) {
 					System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 
 					if(count > 0) {
-						CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-							identifierStack[ptr],
-							identifierPositionStack[ptr],
-							keywords);
-						completionOnKeyword.canCompleteEmptyToken = true;
-						type.superclass = completionOnKeyword;
 						type.superclass.bits |= ASTNode.IsSuperType;
-						this.assistNode = completionOnKeyword;
-						this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 					}
-				} else {
-					CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.EXTENDS);
-					completionOnKeyword.canCompleteEmptyToken = true;
-					this.assistNode = completionOnKeyword;
-					this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 				}
 			}
 		}
@@ -1922,18 +1897,13 @@ protected void consumeMethodHeaderRightParen() {
 				RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
 				/* filter out cases where scanner is still inside type header */
 				if (!recoveredMethod.foundOpeningBrace) {
-					CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.THROWS);
 					recoveredMethod.foundOpeningBrace = true;
-					this.assistNode = completionOnKeyword;
-					this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 				}
 			}
 		}
 	}
 }
+
 protected void consumeLabel() {
 	super.consumeLabel();
 	this.pushOnLabelStack(this.identifierStack[this.identifierPtr]);
@@ -2521,30 +2491,7 @@ public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentif
 }
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-	if(false){//!isInsideMethod()) {
-		if (isInsideFieldInitialization()) {
-			return new CompletionOnSingleNameReference(
-					assistName,
-					position,
-					new char[][]{Keywords.FALSE, Keywords.TRUE},
-					false,
-					isInsideAttributeValue());
-		}
-		return new CompletionOnSingleNameReference(assistName, position, isInsideAttributeValue());
-	} else {
 		boolean canBeExplicitConstructorCall = false;
-		if(kind == K_BLOCK_DELIMITER
-			&& previousKind == K_BLOCK_DELIMITER
-			&& previousInfo == DO) {
-			return new CompletionOnKeyword3(assistName, position, Keywords.WHILE);
-		} else if(kind == K_BLOCK_DELIMITER
-			&& previousKind == K_BLOCK_DELIMITER
-			&& previousInfo == TRY) {
-			return new CompletionOnKeyword3(assistName, position, new char[][]{Keywords.CATCH, Keywords.FINALLY});
-		} else if(kind == K_BLOCK_DELIMITER
-			&& topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) == SWITCH) {
-			return new CompletionOnKeyword3(assistName, position, new char[][]{Keywords.CASE, Keywords.DEFAULT});
-		} else {
 			char[][] keywords = new char[Keywords.COUNT][];
 			int count = 0;
 
@@ -2622,14 +2569,14 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 					keywords[count++]= Keywords.TYPEOF;
 					if(isInsideLoop()) {
 						keywords[count++]= Keywords.CONTINUE;
-				}							}
+				}							
+					}
 			}
 			System.arraycopy(keywords, 0 , keywords = new char[count][], 0, count);
 
 			return new CompletionOnSingleNameReference(assistName, position, keywords, canBeExplicitConstructorCall, isInsideAttributeValue());
-		}
-	}
 }
+
 public TypeReference createSingleAssistTypeReference(char[] assistName, long position) {
 	switch (topKnownElementKind(COMPLETION_OR_ASSIST_PARSER)) {
 		case K_NEXT_TYPEREF_IS_EXCEPTION :
