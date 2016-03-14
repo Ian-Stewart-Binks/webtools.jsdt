@@ -1062,61 +1062,6 @@ private boolean checkClassLiteralAccess() {
 	return false;
 }
 private boolean checkKeyword() {
-	if (currentElement instanceof RecoveredUnit) {
-//		RecoveredUnit unit = (RecoveredUnit) currentElement;
-		int index = -1;
-		if ((index = this.indexOfAssistIdentifier()) > -1) {
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
-
-			char[] ident = identifierStack[ptr];
-			long pos = identifierPositionStack[ptr];
-
-			char[][] keywords = new char[Keywords.COUNT][];
-			int count = 0;
-//			if(unit.typeCount == 0
-//				&& lastModifiers == ClassFileConstants.AccDefault) {
-//				keywords[count++] = Keywords.IMPORT;
-//			}
-//			if(unit.typeCount == 0
-//				&& unit.importCount == 0
-//				&& lastModifiers == ClassFileConstants.AccDefault
-//				&& compilationUnit.currentPackage == null) {
-//				keywords[count++] = Keywords.PACKAGE;
-//			}
-//			if((lastModifiers & ClassFileConstants.AccPublic) == 0) {
-//				boolean hasNoPublicType = true;
-//				for (int i = 0; i < unit.typeCount; i++) {
-//					if((unit.types[i].typeDeclaration.modifiers & ClassFileConstants.AccPublic) != 0) {
-//						hasNoPublicType = false;
-//					}
-//				}
-//				if(hasNoPublicType) {
-//					keywords[count++] = Keywords.PUBLIC;
-//				}
-//			}
-//			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
-//				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
-//				keywords[count++] = Keywords.ABSTRACT;
-//			}
-//			if((lastModifiers & ClassFileConstants.AccAbstract) == 0
-//				&& (lastModifiers & ClassFileConstants.AccFinal) == 0) {
-//				keywords[count++] = Keywords.FINAL;
-//			}
-//
-//			keywords[count++] = Keywords.CLASS;
-//
-//			if((lastModifiers & ClassFileConstants.AccFinal) == 0) {
-//				keywords[count++] = Keywords.INTERFACE;
-//			}
-			if(count != 0) {
-				System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
-
-				this.lastCheckPoint = assistNode.sourceEnd + 1;
-				this.isOrphanCompletionNode = true;
-				return true;
-			}
-		}
-	}
 	return false;
 }
 private boolean checkInstanceofKeyword() {
@@ -1433,39 +1378,6 @@ private boolean checkRecoveredType() {
 		}
 	}
 	return false;
-}
-private void classHeaderExtendsOrImplements(boolean isInterface) {
-	if (currentElement != null
-			&& currentToken == TokenNameIdentifier
-			&& this.cursorLocation+1 >= scanner.startPosition
-			&& this.cursorLocation < scanner.currentPosition){
-			this.pushIdentifier();
-		int index = -1;
-		/* check if current awaiting identifier is the completion identifier */
-		if ((index = this.indexOfAssistIdentifier()) > -1) {
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
-			RecoveredType recoveredType = (RecoveredType)currentElement;
-			/* filter out cases where scanner is still inside type header */
-			if (!recoveredType.foundOpeningBrace) {
-				TypeDeclaration type = recoveredType.typeDeclaration;
-				if(!isInterface) {
-					char[][] keywords = new char[Keywords.COUNT][];
-					int count = 0;
-
-
-					if(type.superclass == null) {
-						keywords[count++] = Keywords.EXTENDS;
-					}
-
-					System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
-
-					if(count > 0) {
-						type.superclass.bits |= ASTNode.IsSuperType;
-					}
-				}
-			}
-		}
-	}
 }
 /*
  * Check whether about to shift beyond the completion token.
