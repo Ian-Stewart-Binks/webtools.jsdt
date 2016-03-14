@@ -116,7 +116,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FunctionTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
@@ -3325,33 +3324,7 @@ public final class CompletionEngine
 		char[][] keywords = new char[Keywords.COUNT][];
 		int count = 0;
 
-		// visibility
-		if((modifiers & ClassFileConstants.AccPrivate) == 0
-			&& (modifiers & ClassFileConstants.AccProtected) == 0
-			&& (modifiers & ClassFileConstants.AccPublic) == 0) {
-			keywords[count++] = Keywords.PROTECTED;
-			keywords[count++] = Keywords.PUBLIC;
-			if((modifiers & ClassFileConstants.AccAbstract) == 0) {
-				keywords[count++] = Keywords.PRIVATE;
-			}
-		}
-
 		if((modifiers & ClassFileConstants.AccAbstract) == 0) {
-			// abtract
-			if((modifiers & ~(ExtraCompilerModifiers.AccVisibilityMASK | ClassFileConstants.AccStatic)) == 0) {
-				keywords[count++] = Keywords.ABSTRACT;
-			}
-
-			// final
-			if((modifiers & ClassFileConstants.AccFinal) == 0) {
-				keywords[count++] = Keywords.FINAL;
-			}
-
-			// static
-			if((modifiers & ClassFileConstants.AccStatic) == 0) {
-				keywords[count++] = Keywords.STATIC;
-			}
-
 			boolean canBeField = true;
 			boolean canBeMethod = true;
 			boolean canBeType = true;
@@ -3359,16 +3332,6 @@ public final class CompletionEngine
 				|| (modifiers & ClassFileConstants.AccStrictfp) != 0) {
 				canBeField = false;
 				canBeType = false;
-			}
-
-
-			if(canBeField) {
-				// transient
-				keywords[count++] = Keywords.TRANSIENT;
-				
-
-				// volatile
-				keywords[count++] = Keywords.VOLATILE;
 			}
 
 			if(canBeMethod) {
@@ -3382,19 +3345,14 @@ public final class CompletionEngine
 					keywords[count++] = Keywords.STRICTFP;
 				}
 
-				// synchronized
-				keywords[count++] = Keywords.SYNCHRONIZED;
-				
 			}
 
 			if(canBeType) {
 				keywords[count++] = Keywords.CLASS;
-				keywords[count++] = Keywords.INTERFACE;
 			}
 		} else {
 			// class
 			keywords[count++] = Keywords.CLASS;
-			keywords[count++] = Keywords.INTERFACE;
 		}
 		System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 

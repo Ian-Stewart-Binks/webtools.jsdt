@@ -1456,7 +1456,6 @@ private void classHeaderExtendsOrImplements(boolean isInterface) {
 					if(type.superclass == null) {
 						keywords[count++] = Keywords.EXTENDS;
 					}
-					keywords[count++] = Keywords.IMPLEMENTS;
 
 					System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 
