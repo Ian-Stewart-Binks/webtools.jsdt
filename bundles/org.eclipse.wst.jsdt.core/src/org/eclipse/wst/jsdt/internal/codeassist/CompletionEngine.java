@@ -880,9 +880,6 @@ public final class CompletionEngine
 			setSourceRange(type.sourceStart, type.sourceEnd);
 
 			findTypesAndPackages(this.completionToken, scope, new ObjectVector());
-			if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-				findKeywordsForMember(this.completionToken, field.modifiers);
-			}
 
 			if (!field.isLocalVariable && field.modifiers == ClassFileConstants.AccDefault) {
 				SourceTypeBinding enclosingType = scope.enclosingSourceType();
@@ -908,13 +905,7 @@ public final class CompletionEngine
 				singleNameReference.isInsideAnnotationAttribute);
 			// can be the start of a qualified type name
 			findTypesAndPackages(this.completionToken, scope, new ObjectVector());
-			if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-				if (this.completionToken != null && this.completionToken.length != 0) {
-					findKeywords(this.completionToken, singleNameReference.possibleKeywords, false, false);
-				} else {
-					findTrueOrFalseKeywords(singleNameReference.possibleKeywords);
-				}
-			}
+			
 			if (singleNameReference.canBeExplicitConstructor && !this.requestor.isIgnored(CompletionProposal.METHOD_REF)){
 				if (CharOperation.prefixEquals(this.completionToken, Keywords.THIS, false)) {
 					ReferenceBinding ref = scope.enclosingSourceType();
@@ -1063,36 +1054,6 @@ public final class CompletionEngine
 				}
 				if (!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
 					findClassField(this.completionToken, (TypeBinding) qualifiedBinding, scope);
-				}
-
-				MethodScope methodScope = null;
-				if (!isInsideAnnotationAttribute &&
-						!this.requestor.isIgnored(CompletionProposal.KEYWORD) &&
-						((scope instanceof MethodScope && !((MethodScope)scope).isStatic)
-						|| ((methodScope = scope.enclosingMethodScope()) != null && !methodScope.isStatic))) {
-					if (this.completionToken.length > 0) {
-						findKeywords(this.completionToken, new char[][]{Keywords.THIS}, false, true);
-					} else {
-						int relevance = computeBaseRelevance();
-						relevance += computeRelevanceForResolution();
-						relevance += computeRelevanceForInterestingProposal();
-						relevance += computeRelevanceForCaseMatching(this.completionToken, Keywords.THIS);
-						relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for keywords
-						relevance += R_NON_INHERITED;
-
-						this.noProposal = false;
-						if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-							CompletionProposal proposal = this.createProposal(CompletionProposal.KEYWORD, this.actualCompletionPosition);
-							proposal.setName(Keywords.THIS);
-							proposal.setCompletion(Keywords.THIS);
-							proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-							proposal.setRelevance(relevance);
-							this.requestor.accept(proposal);
-							if (DEBUG) {
-								this.printDebug(proposal);
-							}
-						}
-					}
 				}
 
 				if (!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
@@ -1254,9 +1215,6 @@ public final class CompletionEngine
 					}
 				} else {
 					if (!access.isInsideAnnotation) {
-						if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-							findKeywords(this.completionToken, new char[][]{Keywords.NEW}, false, false);
-						}
 	
 						findFieldsAndMethods(
 							this.completionToken,
@@ -1944,17 +1902,6 @@ public final class CompletionEngine
 					this.printDebug(this.problem);
 				}
 			}
-			/* Ignore package, import, class & interface keywords for now...
-					if (!completionNodeFound) {
-						if (parsedUnit == null || parsedUnit.types == null) {
-							// this is not good enough... can still be trying to define a second type
-							CompletionScanner scanner = (CompletionScanner) this.parser.scanner;
-							setSourceRange(scanner.completedIdentifierStart, scanner.completedIdentifierEnd);
-							findKeywords(scanner.completionIdentifier, mainDeclarations, null);
-						}
-						// currently have no way to know if extends/implements are possible keywords
-					}
-			*/
 		} catch (IndexOutOfBoundsException e) { // work-around internal failure - 1GEMF6D
 			if(DEBUG) {
 				System.out.println("Exception caught by CompletionEngine:"); //$NON-NLS-1$
@@ -3248,115 +3195,6 @@ public final class CompletionEngine
 				}
 			}
 		}
-	}
-
-	// what about onDemand types? Ignore them since it does not happen!
-	// import p1.p2.A.*;
-	private void findKeywords(char[] keyword, char[][] choices, boolean canCompleteEmptyToken, boolean staticFieldsAndMethodOnly) {
-		if(choices == null || choices.length == 0) return;
-
-		int length = keyword.length;
-		if (canCompleteEmptyToken || length > 0)
-			for (int i = 0; i < choices.length; i++)
-				if (length <= choices[i].length
-					&& CharOperation.prefixEquals(keyword, choices[i], false /* ignore case */
-				)){
-					int relevance = computeBaseRelevance();
-					relevance += computeRelevanceForResolution();
-					relevance += computeRelevanceForInterestingProposal();
-					relevance += computeRelevanceForCaseMatching(keyword, choices[i]);
-					relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for keywors
-					if (staticFieldsAndMethodOnly && this.insideQualifiedReference) relevance += R_NON_INHERITED;
-
-					if(CharOperation.equals(choices[i], Keywords.TRUE) || CharOperation.equals(choices[i], Keywords.FALSE)) {
-						relevance += computeRelevanceForExpectingType(TypeBinding.BOOLEAN);
-						relevance += computeRelevanceForQualification(false);
-					}
-					this.noProposal = false;
-					if(!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-						CompletionProposal proposal = this.createProposal(CompletionProposal.KEYWORD, this.actualCompletionPosition);
-						proposal.setName(choices[i]);
-						proposal.setCompletion(choices[i]);
-						proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-						proposal.setRelevance(relevance);
-						this.requestor.accept(proposal);
-						if(DEBUG) {
-							this.printDebug(proposal);
-						}
-					}
-				}
-	}
-	private void findTrueOrFalseKeywords(char[][] choices) {
-		if(choices == null || choices.length == 0) return;
-
-		if(this.expectedTypesPtr != 0 || this.expectedTypes[0] != TypeBinding.BOOLEAN) return;
-
-		for (int i = 0; i < choices.length; i++) {
-			if (CharOperation.equals(choices[i], Keywords.TRUE) ||
-					CharOperation.equals(choices[i], Keywords.FALSE)
-			){
-				int relevance = computeBaseRelevance();
-				relevance += computeRelevanceForResolution();
-				relevance += computeRelevanceForInterestingProposal();
-				relevance += computeRelevanceForCaseMatching(CharOperation.NO_CHAR, choices[i]);
-				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for keywors
-				relevance += computeRelevanceForExpectingType(TypeBinding.BOOLEAN);
-				relevance += computeRelevanceForQualification(false);
-				relevance += R_TRUE_OR_FALSE;
-
-				this.noProposal = false;
-				if(!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-					CompletionProposal proposal = this.createProposal(CompletionProposal.KEYWORD, this.actualCompletionPosition);
-					proposal.setName(choices[i]);
-					proposal.setCompletion(choices[i]);
-					proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-					proposal.setRelevance(relevance);
-					this.requestor.accept(proposal);
-					if(DEBUG) {
-						this.printDebug(proposal);
-					}
-				}
-			}
-		}
-	}
-
-	private void findKeywordsForMember(char[] token, int modifiers) {
-		char[][] keywords = new char[Keywords.COUNT][];
-		int count = 0;
-
-		if((modifiers & ClassFileConstants.AccAbstract) == 0) {
-			boolean canBeField = true;
-			boolean canBeMethod = true;
-			boolean canBeType = true;
-			if((modifiers & ClassFileConstants.AccNative) != 0
-				|| (modifiers & ClassFileConstants.AccStrictfp) != 0) {
-				canBeField = false;
-				canBeType = false;
-			}
-
-			if(canBeMethod) {
-				// native
-				if((modifiers & ClassFileConstants.AccNative) == 0) {
-					keywords[count++] = Keywords.NATIVE;
-				}
-
-				// strictfp
-				if((modifiers & ClassFileConstants.AccStrictfp) == 0) {
-					keywords[count++] = Keywords.STRICTFP;
-				}
-
-			}
-
-			if(canBeType) {
-				keywords[count++] = Keywords.CLASS;
-			}
-		} else {
-			// class
-			keywords[count++] = Keywords.CLASS;
-		}
-		System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
-
-		findKeywords(token, keywords, false, false);
 	}
 
 	private void findMemberTypes(
@@ -6770,7 +6608,7 @@ public final class CompletionEngine
 			 * function() {
 			 *   foo.bar = function() {};
 			 * }*/
-			if(method.declaringClass != null &&
+			if (method.declaringClass != null &&
 						(!(method instanceof LocalFunctionBinding) || !(method.declaringClass instanceof CompilationUnitBinding)) ) {
 				
 				/* if declaring type is a compilation unit, then use global type
