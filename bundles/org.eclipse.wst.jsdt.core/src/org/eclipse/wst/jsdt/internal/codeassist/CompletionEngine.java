@@ -6062,9 +6062,6 @@ public final class CompletionEngine
 			case CompletionProposal.FIELD_REF :
 				buffer.append("FIELD_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.KEYWORD :
-				buffer.append("KEYWORD"); //$NON-NLS-1$
-				break;
 			case CompletionProposal.LABEL_REF :
 				buffer.append("LABEL_REF"); //$NON-NLS-1$
 				break;
