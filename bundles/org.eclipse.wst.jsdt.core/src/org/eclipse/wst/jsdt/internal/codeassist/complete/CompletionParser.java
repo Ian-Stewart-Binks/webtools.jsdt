@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser;
-import org.eclipse.wst.jsdt.internal.codeassist.impl.Keywords;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -360,7 +359,6 @@ protected void attachOrphanCompletionNode(){
 					arrayInitializer.expressions = new Expression[]{expression};
 				} else if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
 					if (expression instanceof SingleNameReference) {
-						SingleNameReference nameReference = (SingleNameReference) expression;
 						return;
 					} else if (expression instanceof QualifiedNameReference) {
 					}
@@ -394,14 +392,9 @@ protected void attachOrphanCompletionNode(){
 	}
 
 	if(this.currentElement instanceof RecoveredType || this.currentElement instanceof RecoveredMethod) {
-		if(this.currentElement instanceof RecoveredType) {
-			RecoveredType recoveredType = (RecoveredType)this.currentElement;
-		}
 
 		if ((!isInsideMethod() && !isInsideFieldInitialization())) {
 			if(this.genericsPtr > -1 && this.genericsLengthPtr > -1 && this.genericsIdentifiersLengthPtr > -1) {
-				int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-				int info = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER);
 				int numberOfIdentifiers = this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr];
 				int genPtr = this.genericsPtr;
 				done : for(int i = 0; i <= this.identifierLengthPtr && numberOfIdentifiers > 0; i++){
@@ -1061,9 +1054,6 @@ private boolean checkClassLiteralAccess() {
 	return false;
 }
 
-private boolean checkInstanceofKeyword() {
-	return false;
-}
 /**
  * Checks if the completion is inside a method invocation or a constructor invocation.
  * Returns whether we found a completion node.
@@ -1403,7 +1393,6 @@ public void completionIdentifierCheck(){
 	if (checkCatchClause()) return;
 	if (checkMemberAccess()) return;
 	if (checkClassLiteralAccess()) return;
-	if (checkInstanceofKeyword()) return;
 
 	// if the completion was not on an empty name, it can still be inside an invocation (eg. this.fred("abc"[cursor])
 	// (NB: Put this check before checkNameCompletion() because the selector of the invocation can be on the identifier stack)
@@ -1775,10 +1764,8 @@ protected void consumeMethodHeaderRightParen() {
 		&& this.cursorLocation < scanner.currentPosition){
 		this.pushIdentifier();
 
-		int index = -1;
 		/* check if current awaiting identifier is the completion identifier */
-		if ((index = this.indexOfAssistIdentifier()) > -1) {
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
+		if (this.indexOfAssistIdentifier() > -1) {
 			if (currentElement instanceof RecoveredMethod){
 				RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
 				/* filter out cases where scanner is still inside type header */
@@ -2378,81 +2365,14 @@ public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentif
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
 	boolean canBeExplicitConstructorCall = false;
-	char[][] keywords = new char[Keywords.COUNT][];
-	int count = 0;
-
-	keywords[count++]= Keywords.THIS;
-	keywords[count++]= Keywords.NEW;
 
 	if (kind == K_BLOCK_DELIMITER || kind == 0) {
 		if(canBeExplicitConstructor == YES) {
 			canBeExplicitConstructorCall = true;
 		}
-
-		keywords[count++]= Keywords.DO;
-		keywords[count++]= Keywords.FOR;
-		keywords[count++]= Keywords.IF;
-		keywords[count++]= Keywords.RETURN;
-		keywords[count++]= Keywords.SWITCH;
-		keywords[count++]= Keywords.THROW;
-		keywords[count++]= Keywords.TRY;
-		keywords[count++]= Keywords.WHILE;
-		keywords[count++]= Keywords.VAR;
-		keywords[count++]= Keywords.FUNCTION;
-		keywords[count++]= Keywords.DELETE;
-		keywords[count++]= Keywords.TYPEOF;
-
-		if (previousKind == K_BLOCK_DELIMITER) {
-			switch (previousInfo) {
-				case IF :
-					keywords[count++]= Keywords.ELSE;
-					break;
-				case CATCH :
-					keywords[count++]= Keywords.CATCH;
-					keywords[count++]= Keywords.FINALLY;
-					break;
-			}
-		}
-		if (isInsideLoop()) {
-			keywords[count++]= Keywords.CONTINUE;
-		}
-		if (isInsideBreakable()) {
-			keywords[count++]= Keywords.BREAK;
-		}
-	} else if (kind != K_BETWEEN_CASE_AND_COLON && kind != K_BETWEEN_DEFAULT_AND_COLON) {
-		keywords[count++]= Keywords.TRUE;
-		keywords[count++]= Keywords.FALSE;
-		keywords[count++]= Keywords.NULL;
-		keywords[count++]= Keywords.UNDEFINED;
-		keywords[count++]= Keywords.FUNCTION;
-
-		if (kind == K_SWITCH_LABEL) {
-			if (topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) != DEFAULT) {
-				keywords[count++]= Keywords.DEFAULT;
-			}
-			keywords[count++]= Keywords.BREAK;
-			keywords[count++]= Keywords.CASE;
-			keywords[count++]= Keywords.DO;
-			keywords[count++]= Keywords.FOR;
-			keywords[count++]= Keywords.IF;
-			keywords[count++]= Keywords.RETURN;
-			keywords[count++]= Keywords.SWITCH;
-			keywords[count++]= Keywords.THROW;
-			keywords[count++]= Keywords.TRY;
-			keywords[count++]= Keywords.WHILE;
-			keywords[count++]= Keywords.VAR;
-			keywords[count++]= Keywords.FUNCTION;
-			keywords[count++]= Keywords.DELETE;
-			keywords[count++]= Keywords.TYPEOF;
-			
-			if (isInsideLoop()) {
-				keywords[count++]= Keywords.CONTINUE;
-			}							
-		}
 	}
-	System.arraycopy(keywords, 0 , keywords = new char[count][], 0, count);
 
-	return new CompletionOnSingleNameReference(assistName, position, keywords, canBeExplicitConstructorCall, isInsideAttributeValue());
+	return new CompletionOnSingleNameReference(assistName, position, null, canBeExplicitConstructorCall, isInsideAttributeValue());
 }
 
 public TypeReference createSingleAssistTypeReference(char[] assistName, long position) {
@@ -3125,8 +3045,7 @@ protected JavadocParser createJavadocParser() {
 			long position =  (((long)snr.sourceStart)<<32)+snr.sourceEnd;
 			expression.member= new CompletionOnSingleTypeReference(snr.token,position);
 			((CompletionOnSingleTypeReference)expression.member).isConstructorType = true;
-		}
-		else if(member instanceof CompletionOnMemberAccess) {
+		} else if(member instanceof CompletionOnMemberAccess) {
 			CompletionOnMemberAccess memberAccess = (CompletionOnMemberAccess) member;
 			
 			//iterate over the receivers to build the token and find the start of the expression
@@ -3137,15 +3056,14 @@ protected JavadocParser createJavadocParser() {
 				start = receiver.sourceStart();
 				if(receiver instanceof IFieldReference) {
 					IFieldReference ref = (IFieldReference)receiver;
-					token = new String(ref.getToken()) + "." + token;
+					token = new String(ref.getToken()) + "." + token; //$NON-NLS-1$
 					receiver = ref.getReceiver();
 				} else if(receiver instanceof ISingleNameReference) {
 					ISingleNameReference ref = (ISingleNameReference)receiver;
-					token = new String(ref.getToken()) + "." + token;
+					token = new String(ref.getToken()) + "." + token; //$NON-NLS-1$
 					receiver = null;
 				} else if(receiver instanceof IThisReference) {
-					IThisReference ref = (IThisReference)receiver;
-					token =  "this." + token;
+					token =  "this." + token; //$NON-NLS-1$
 					receiver = null;
 				}
 			}
