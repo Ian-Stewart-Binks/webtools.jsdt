@@ -59,7 +59,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.manipulation.JavaScriptManipulation;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaContextType;
 import org.eclipse.wst.jsdt.internal.corext.template.java.JavaDocContextType;
@@ -455,8 +455,8 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 		// we directly insert the inlined value of this constant
 		store.setToDefault(DEPRECATED_REFACTOR_ERROR_PAGE_SEVERITY_THRESHOLD);
 		
-		if (!store.getBoolean(JavaDocLocations.PREF_JAVADOCLOCATIONS_MIGRATED)) {
-			JavaDocLocations.migrateToClasspathAttributes();
+		if (!store.getBoolean(JSDocLocations.PREF_JAVADOCLOCATIONS_MIGRATED)) {
+			JSDocLocations.migrateToClasspathAttributes();
 		}
 		
 		FormatterProfileStore.checkCurrentOptionsVersion();

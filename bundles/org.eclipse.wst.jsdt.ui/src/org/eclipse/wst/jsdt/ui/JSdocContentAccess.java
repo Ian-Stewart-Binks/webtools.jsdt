@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.util.SequenceReader;
 import org.eclipse.wst.jsdt.internal.core.MetadataFile;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.Logger;
@@ -132,7 +132,7 @@ public class JSdocContentAccess {
 					}
 				}
 				if (jsDocRange != null) {
-					JavaDocCommentReader reader = new JavaDocCommentReader(buf, jsDocRange.getOffset(), jsDocRange.getOffset() + jsDocRange.getLength() - 1);
+					JSDocCommentReader reader = new JSDocCommentReader(buf, jsDocRange.getOffset(), jsDocRange.getOffset() + jsDocRange.getLength() - 1);
 					if (!containsOnlyInheritDoc(reader, jsDocRange.getLength())) {
 						reader.reset();
 						readers.add(reader);
@@ -192,7 +192,7 @@ public class JSdocContentAccess {
 		IOpenable openable = declaration.getOpenable();
 		if (!(openable instanceof MetadataFile)) {
 			IBuffer buf = openable.getBuffer();
-			JavaDocCommentReader r = new JavaDocCommentReader(buf, declaration.getNameRange().getOffset() - 1);
+			JSDocCommentReader r = new JSDocCommentReader(buf, declaration.getNameRange().getOffset() - 1);
 			if(r.getOffset() != declaration.getNameRange().getOffset() - 1) {
 				return r;
 			}

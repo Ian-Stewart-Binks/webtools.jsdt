@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -47,7 +47,7 @@ public class JavadocAttributeConfiguration extends ClasspathAttributeConfigurati
 		String arg= null;
 		String str= access.getClasspathAttribute().getValue();
 		if (str != null) {
-			String prefix= JavaDocLocations.ARCHIVE_PREFIX;
+			String prefix= JSDocLocations.ARCHIVE_PREFIX;
 			if (str.startsWith(prefix)) {
 				int sepIndex= str.lastIndexOf("!/"); //$NON-NLS-1$
 				if (sepIndex == -1) {

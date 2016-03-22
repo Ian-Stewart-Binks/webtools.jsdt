@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocLocations;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaElementTransfer;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
@@ -644,7 +644,7 @@ public final class JavaScriptUI {
 	 * 
 	 */	
 	public static URL getLibraryJSdocLocation(IIncludePathEntry entry) {
-		return JavaDocLocations.getLibraryJavadocLocation(entry);
+		return JSDocLocations.getLibraryJavadocLocation(entry);
 	}
 	
 	/**
@@ -659,7 +659,7 @@ public final class JavaScriptUI {
 	 * 
 	 */
 	public static void setProjectJSdocLocation(IJavaScriptProject project, URL url) {
-		JavaDocLocations.setProjectJavadocLocation(project, url);
+		JSDocLocations.setProjectJavadocLocation(project, url);
 	}
 
 	/**
@@ -673,7 +673,7 @@ public final class JavaScriptUI {
 	 * 
 	 */	
 	public static URL getProjectJSdocLocation(IJavaScriptProject project) {
-		return JavaDocLocations.getProjectJavadocLocation(project);
+		return JSDocLocations.getProjectJavadocLocation(project);
 	}	
 
 	/**
@@ -689,7 +689,7 @@ public final class JavaScriptUI {
 	 * 
 	 */		
 	public static URL getJSdocBaseLocation(IJavaScriptElement element) throws JavaScriptModelException {	
-		return JavaDocLocations.getJavadocBaseLocation(element);
+		return JSDocLocations.getJavadocBaseLocation(element);
 	}
 	
 	/**
@@ -709,7 +709,7 @@ public final class JavaScriptUI {
 	 * 
 	 */		
 	public static URL getJSdocLocation(IJavaScriptElement element, boolean includeAnchor) throws JavaScriptModelException {
-		return JavaDocLocations.getJavadocLocation(element, includeAnchor);
+		return JSDocLocations.getJavadocLocation(element, includeAnchor);
 	}
 	
 	/**

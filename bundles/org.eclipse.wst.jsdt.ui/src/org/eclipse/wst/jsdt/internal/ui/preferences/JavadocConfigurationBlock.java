@@ -53,7 +53,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.eclipse.ui.wizards.datatransfer.ZipFileStructureProvider;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocLocations;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.OpenBrowserUtil;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
@@ -246,7 +246,7 @@ public class JavadocConfigurationBlock {
 			fURLField.setText(initialValue);
 			return;
 		}
-		String prefix= JavaDocLocations.ARCHIVE_PREFIX;
+		String prefix= JSDocLocations.ARCHIVE_PREFIX;
 		boolean isArchive= initialValue.startsWith(prefix);
 		
 		boolean isWorkspaceArchive= false;

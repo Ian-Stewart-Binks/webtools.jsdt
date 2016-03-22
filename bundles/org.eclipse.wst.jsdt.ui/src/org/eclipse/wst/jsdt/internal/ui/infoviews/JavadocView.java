@@ -73,7 +73,7 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
+import org.eclipse.wst.jsdt.internal.corext.jsdoc.JSDocLocations;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -578,7 +578,7 @@ public class JavadocView extends AbstractInfoView {
 					
 					// Provide hint why there's no Javadoc
 					if (reader == null && member.isBinary()) {
-						boolean hasAttachedJavadoc= JavaDocLocations.getJavadocBaseLocation(member) != null;
+						boolean hasAttachedJavadoc= JSDocLocations.getJavadocBaseLocation(member) != null;
 						IPackageFragmentRoot root= (IPackageFragmentRoot)member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 						boolean hasAttachedSource= root != null && root.getSourceAttachmentPath() != null;
 						IOpenable openable= member.getOpenable();
