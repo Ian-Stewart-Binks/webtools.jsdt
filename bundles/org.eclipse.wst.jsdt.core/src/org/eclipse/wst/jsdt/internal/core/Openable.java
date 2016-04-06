@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
-import org.eclipse.wst.jsdt.internal.codeassist.DOMCompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -139,8 +138,8 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 	org.eclipse.wst.jsdt.core.dom.JavaScriptUnit result = info.ast;
 	
 	
-	DOMCompletionEngine domEngine = new DOMCompletionEngine(requestor, project);
-	domEngine.complete(result, position,0);
+//	DOMCompletionEngine domEngine = new DOMCompletionEngine(requestor, project);
+//	domEngine.complete(result, position,0);
 
 	
 	// set unit to skip
