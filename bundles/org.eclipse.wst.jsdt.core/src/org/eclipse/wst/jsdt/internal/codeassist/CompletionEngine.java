@@ -6736,16 +6736,16 @@ public final class CompletionEngine
 			char[] declaringSimpleName,
 			int modifiers) {
 		
-		//compute completion
-		char[] completion;
-		if (this.source != null
-				&& this.source.length > this.endPosition
-				&& this.source[this.endPosition] == '(') {
-			
-			completion = name;
-		} else {
-			completion = CharOperation.concat(name, new char[] { '(', ')' });
-		}
+//		//compute completion
+//		char[] completion;
+//		if (this.source != null
+//				&& this.source.length > this.endPosition
+//				&& this.source[this.endPosition] == '(') {
+//			
+//			completion = name;
+//		} else {
+//			completion = CharOperation.concat(name, new char[] { '(', ')' });
+//		}
 		
 		//compute relevance
 		int relevance = computeBaseRelevance();
@@ -6935,28 +6935,6 @@ public final class CompletionEngine
 				this.printDebug(proposal);
 			}
 		}
-	}
-	
-	/**
-	 * <p>
-	 * Computes the relevance of a given name. The name could be for a type,
-	 * field, or function.
-	 * </p>
-	 * 
-	 * @param name
-	 *            compute the relevance of this type, field, or function name
-	 * 
-	 * @return relevance of the given type, field, or function name
-	 */
-	private static int computeRelevanceForName(char[] name) {
-		int relevance = 0;
-		
-		//higher relevance if name does not start with an underscore
-		if(name != null && name.length > 0 && name[0] != '_') {
-			relevance = RelevanceConstants.R_NOT_UNDERSCORE;
-		}
-		
-		return relevance;
 	}
 	
 	/**
