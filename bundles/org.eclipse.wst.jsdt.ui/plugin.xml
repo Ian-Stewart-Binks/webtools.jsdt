@@ -270,7 +270,7 @@
 		id="IdentifierCompletionProposalComputer">
 		<javaCompletionProposalComputer
 			class="org.eclipse.wst.jsdt.internal.ui.text.java.IdentifierCompletionProposalComputer"
-			categoryId="org.eclipse.wst.jsdt.ui.identifierProposalCategory">
+			categoryId="org.eclipse.wst.jsdt.ui.defaultProposalCategory">
 		</javaCompletionProposalComputer>
 	</extension>
 	
