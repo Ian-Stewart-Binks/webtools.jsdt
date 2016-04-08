@@ -2,7 +2,7 @@
  * Licensed Materials - Property of IBM
  * © Copyright IBM Corporation 2016. All Rights Reserved.
  * U.S. Government Users Restricted Rights - Use, duplication or disclosure
- * restricted by GSA ADP Schedule Contract with IBM Corp. 
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
@@ -26,17 +26,17 @@ import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 public class IdentifierProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
-	
-	private String displayString;
+
 	private IRegion fRegion;
 	private Region fSelectedRegion;
 	private List<String> fields;
 	private IdentifierType type;
 	private List<String> parameterNames;
-	private JSdoc JSdoc;
-	
-	public IdentifierProposal(String displayString) {
-		this.displayString = displayString;
+	private String name;
+	private boolean isGlobal = false;
+
+	public IdentifierProposal(String name) {
+		this.name = name;
 	}
 
 	public void setRegion(IRegion fRegion) {
@@ -48,7 +48,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void apply(IDocument document) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public Point getSelection(IDocument document) {
 		// TODO Auto-generated method stub
-		return new Point(fRegion.getOffset() + this.displayString.length(), 0);
+		return new Point(fRegion.getOffset() + this.name.length(), 0);
 	}
 
 	/* (non-Javadoc)
@@ -68,7 +68,18 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	}
 
 	public String getDisplayString() {
-		return displayString;
+		if (this.isGlobal) {
+			return getProposalString() + " - Global";
+		}
+		return getProposalString();
+	}
+
+	public String getProposalString() {
+		if (this.type == IdentifierType.FUNCTION) {
+			return this.name + "(" + getParameterString() + ")";
+		} else {
+			return this.name;
+		}
 	}
 
 	/* (non-Javadoc)
@@ -124,20 +135,14 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
 		IDocument document = viewer.getDocument();
-		
+
 		try {
-			System.out.println(this.type);
-			if (this.type == IdentifierType.FUNCTION) {
-				document.replace(fRegion.getOffset(), offset - fRegion.getOffset(), this.displayString + "(" + getParameterString() + ")");
-			} else {
-				document.replace(fRegion.getOffset(), offset - fRegion.getOffset(), this.displayString);
-			}
-		}
-		catch (BadLocationException e) {
+			document.replace(fRegion.getOffset(), offset - fRegion.getOffset(), getProposalString());
+		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		
-		this.fSelectedRegion = new Region(fRegion.getOffset() + this.displayString.length(), 0);
+
+		this.fSelectedRegion = new Region(fRegion.getOffset() + this.name.length(), 0);
 	}
 
 	/* (non-Javadoc)
@@ -145,10 +150,13 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void selected(ITextViewer viewer, boolean smartToggle) {
 		// TODO Auto-generated method stub
-		
-	}	
-	
+
+	}
+
 	private String getParameterString() {
+		if (parameterNames.isEmpty()) {
+			return "";
+		}
 		StringBuilder str = new StringBuilder();
 		for (String param : parameterNames) {
 			str.append(param + ", "); //$NON-NLS-1$
@@ -161,7 +169,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void unselected(ITextViewer viewer) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -179,17 +187,16 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	public void addField(String field) {
 		this.fields.add(field);
 	}
-	
+
 	public List<String> getFields() {
 		return this.fields;
 	}
-	
+
 	public void setType(IdentifierType type) {
-		System.out.println("setType >>");
 		this.type = type;
 	}
 
@@ -198,7 +205,10 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	}
 
 	public void setJSdoc(JSdoc jsdoc) {
-		this.JSdoc = jsdoc; 
 	}
-	
+
+	public void setIsGlobal(boolean val) {
+		this.isGlobal = val;
+	}
+
 }
