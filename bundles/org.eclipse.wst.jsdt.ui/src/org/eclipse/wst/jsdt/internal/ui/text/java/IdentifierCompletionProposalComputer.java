@@ -2,7 +2,7 @@
  * Licensed Materials - Property of IBM
  * � Copyright IBM Corporation 2016. All Rights Reserved.
  * U.S. Government Users Restricted Rights - Use, duplication or disclosure
- * restricted by GSA ADP Schedule Contract with IBM Corp. 
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
@@ -24,15 +24,14 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
 public class IdentifierCompletionProposalComputer implements IJavaCompletionProposalComputer {
 
-
 	private IdentifierEngine engine;
-	
+
 	public IdentifierCompletionProposalComputer() {
 		// TODO: Is TemplateContextType the type we want?
 		CompilationUnitContextType contextType = (CompilationUnitContextType) JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		engine = new IdentifierEngine(contextType);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposalComputer#sessionStarted()
 	 */
@@ -48,10 +47,10 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 		IJavaScriptUnit unit = javaContext.getCompilationUnit();
 		engine.reset();
 		engine.complete(javaContext.getProject(), javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
-		
+
 		ICompletionProposal[] identifierProposals =  engine.getResults();
 		List<ICompletionProposal> result = new ArrayList<ICompletionProposal>(Arrays.asList(identifierProposals));
-		
+
 		return result;
 	}
 
@@ -76,7 +75,7 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 	 */
 	public void sessionEnded() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
