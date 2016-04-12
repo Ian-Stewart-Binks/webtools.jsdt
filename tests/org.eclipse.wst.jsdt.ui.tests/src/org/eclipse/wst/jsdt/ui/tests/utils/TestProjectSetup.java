@@ -227,7 +227,6 @@ public class TestProjectSetup extends TestSetup {
 	 */
 	public IFile getFile(String path) {
 		IFile file = null;
-
 		if (this.fRootDirectory != null) {
 			file = this.fProject.getFile(this.fRootDirectory + IPath.SEPARATOR + path);
 		} else {
