@@ -17,15 +17,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.TestSuite;
-
+@SuppressWarnings("nls")
 public class GlobalFunctionTests {
 	private static TestProjectSetup fTestProjectSetup;
 
 	@BeforeClass
 	public static void setup() {
-		TestSuite ts = new TestSuite(AllContentAssistTests.class);
-		fTestProjectSetup = new TestProjectSetup(ts, "ContentAssist", "root", false);
+		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
 		try {
 			fTestProjectSetup.setUp();
 		} catch (Exception e) {
@@ -80,40 +78,40 @@ public class GlobalFunctionTests {
 			"funcOne() - Global",
 			"funcTwo() - Global",
 			"funcThree(paramOne) - Global",
-			"funcFour(paramOne, paramTwo) : Number - Global"
+			"funcFour(paramOne, paramTwo) - Global"
 		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 54, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFunctions_ThisFile_ExpressionStarted_0() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"funcOne() - Global",
 			"funcTwo() - Global",
 			"funcThree(paramOne) - Global",
 			"funcFour(paramOne, paramTwo) - Global",
-			"funcFive(Number paramOne, String paramTwo) - Global",
-			"funcSix(paramOne, String paramTwo) - Global",
-			"funcSeven(String paramOne, paramTwo) - Global"
+			"funcFive(paramOne, paramTwo) - Global",
+			"funcSix(paramOne, paramTwo) - Global",
+			"funcSeven(paramOne, paramTwo) - Global"
 		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 57, 1, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFunctions_ThisFile_ExpressionStarted_1() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"funcOne() - Global",
 			"funcTwo() - Global",
 			"funcThree(paramOne) - Global",
 			"funcFour(paramOne, paramTwo) - Global",
-			"funcFive(Number paramOne, String paramTwo) - Global",
-			"funcSix(paramOne, String paramTwo) - Global",
-			"funcSeven(String paramOne, paramTwo) - Global"
+			"funcFive(paramOne, paramTwo) - Global",
+			"funcSix(paramOne, paramTwo) - Global",
+			"funcSeven(paramOne, paramTwo) - Global"
 		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test0_0.js", 59, 4, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFunctions_ThisFile_ExpressionStarted_2() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"funcTwo() - Global",
@@ -205,7 +203,7 @@ public class GlobalFunctionTests {
 				expectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test // This one fails?
 	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"foo1(param2) - Global",
@@ -215,7 +213,7 @@ public class GlobalFunctionTests {
 				expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"foo1(param2) - Global",
@@ -225,7 +223,7 @@ public class GlobalFunctionTests {
 				expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionNotStarted_NegativeTest() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"foo1Ignored",
@@ -235,7 +233,7 @@ public class GlobalFunctionTests {
 				expectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testNamedFunctionsAssignedToVariables_ThisFile_ExpressionStarted1_NegativeTest() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 			"foo1Ignored",

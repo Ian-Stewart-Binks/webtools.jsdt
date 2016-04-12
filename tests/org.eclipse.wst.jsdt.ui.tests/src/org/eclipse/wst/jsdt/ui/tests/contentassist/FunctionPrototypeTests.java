@@ -16,16 +16,14 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.TestSuite;
-
 @SuppressWarnings("nls")
 public class FunctionPrototypeTests {
 	private static TestProjectSetup fTestProjectSetup;
 
 	@BeforeClass
-	public static void setup() {
-		TestSuite ts = new TestSuite(FunctionPrototypeTests.class);
-		fTestProjectSetup = new TestProjectSetup(ts, "ContentAssist", "root", false);
+	public static void setup() throws Exception {
+		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
+		fTestProjectSetup.setUp();awef
 	}
 
 	@Ignore @Test

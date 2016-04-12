@@ -17,30 +17,29 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.TestSuite;
-
 @SuppressWarnings("nls")
 public class FunctionParamsTest {
 	private static TestProjectSetup fTestProjectSetup;
 
 	@BeforeClass
-	public static void setup() {
-		TestSuite ts = new TestSuite(FunctionParamsTest.class);
-		fTestProjectSetup = new TestProjectSetup(ts, "ContentAssist", "root", false);
+	public static void setup() throws Exception {
+		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
+		fTestProjectSetup.setUp();
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindParamInFunctionAsLocal() throws Exception {
-		String[][] expectedProposals = new String[][] { { "testfunctionParam_Fun1_param1 : Number" } };
+		String[][] expectedProposals = new String[][] { { "testfunctionParam_Fun1_param1" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionParams_0.js", 2, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testDoNotFindParamOutsideFunctionAsGlobalSameFile() throws Exception {
 		String[][] expectedProposals = new String[][] { { "testfunctionParam_Fun1_param1" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionParams_0.js", 5, 28, expectedProposals, true, false);
 	}
 
+	@Ignore @Test
 	public void testDoNotFindParamOutsideFunctionAsGlobalOtherFile() throws Exception {
 		String[][] expectedProposals = new String[][] { { "testfunctionParam_Fun1_param1" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionParams_1.js", 0, 28, expectedProposals, true, false);
