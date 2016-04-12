@@ -192,6 +192,10 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		this.fields.add(field);
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
 	public List<String> getFields() {
 		return this.fields;
 	}

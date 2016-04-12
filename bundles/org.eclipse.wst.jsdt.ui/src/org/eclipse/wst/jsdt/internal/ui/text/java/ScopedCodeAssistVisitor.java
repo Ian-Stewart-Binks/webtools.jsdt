@@ -181,6 +181,16 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		return true;
 	}
 
+	public void endVisit(Assignment node) {
+		System.out.println("Assignment <<");
+		if (!identifierExists(mostRecentSimpleName)) {
+			IdentifierProposal proposal = new IdentifierProposal(mostRecentSimpleName);
+			proposal.setIsGlobal(scopes.size() == 1);
+			identifiers.add(proposal);
+			identifierProposalStack.add(proposal);
+		}
+	}
+
 	public boolean visit(BlockComment node) {
 		System.out.println("BlockComment >>");
 		return true;
@@ -379,6 +389,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	public boolean visit(SimpleName node) {
 		System.out.println("SimpleName >>");
 		mostRecentSimpleName = node.getIdentifier().toString();
+
+		System.out.println(mostRecentSimpleName);
 		return true;
 	}
 
@@ -393,7 +405,16 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public boolean visit(SingleVariableDeclaration node) {
 		System.out.println("SingleVariableDeclaration >>");
+		IdentifierProposal proposal = new IdentifierProposal(mostRecentSimpleName);
+		proposal.setIsGlobal(scopes.size() == 1);
+		identifiers.add(proposal);
+		identifierProposalStack.add(proposal);
 		return true;
+	}
+
+	public void endVisit(SingleVariableDeclaration node) {
+		System.out.println("SingleVariableDeclaration >>");
+		identifierProposalStack.pop();
 	}
 
 	public boolean visit(StringLiteral node) {
@@ -464,13 +485,15 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public boolean visit(VariableDeclarationFragment node) {
 		System.out.println("VariableDeclarationFragment >>");
-//		IdentifierProposal identifierProposal = new IdentifierProposal(node.getName().getIdentifier());
-//		identifiers.add(identifierProposal);
-//		identifierProposalStack.add(identifierProposal);
+		IdentifierProposal identifierProposal = new IdentifierProposal(node.getName().getIdentifier());
+		identifierProposal.setIsGlobal(scopes.size() == 1);
+		identifiers.add(identifierProposal);
+		identifierProposalStack.add(identifierProposal);
 		return true;
 	}
 
 	public void endVisit(VariableDeclarationFragment node) {
+		identifierProposalStack.pop();
 		System.out.println("VariableDeclarationFragment <<");
 	}
 
@@ -506,7 +529,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		System.out.println("FunctionDeclaration >>" + node);
 		Expression methodName = node.getMethodName();
 		String name;
-		if (methodName == null) {
+		if ((methodName == null) || (mostRecentSimpleName != null)) {
 			name = mostRecentSimpleName;
 		} else {
 			name = methodName.toString();
@@ -655,6 +678,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			ASTNode curr = list.get(i);
 			curr.accept(this);
 		}
+	}
+
+	private boolean identifierExists(String identifierName) {
+		return identifiers.stream().filter(k -> k.getName() == identifierName).collect(Collectors.toList()).size() > 0;
 	}
 
 }

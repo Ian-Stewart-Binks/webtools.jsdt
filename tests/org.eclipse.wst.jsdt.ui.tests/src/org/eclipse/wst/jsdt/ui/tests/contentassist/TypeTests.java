@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.tests.contentassist;
 
+import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
 
 public class TypeTests extends TestCase {
 	/**
@@ -31,7 +31,7 @@ public class TypeTests extends TestCase {
 	 * </p>
 	 */
 	private static TestProjectSetup fTestProjectSetup;
-	
+
 	/**
 	 * <p>
 	 * Default constructor
@@ -39,7 +39,7 @@ public class TypeTests extends TestCase {
 	 * <p>
 	 * Use {@link #suite()}
 	 * </p>
-	 * 
+	 *
 	 * @see #suite()
 	 */
 	public TypeTests() {
@@ -53,10 +53,10 @@ public class TypeTests extends TestCase {
 	 * <p>
 	 * Use {@link #suite()}
 	 * </p>
-	 * 
+	 *
 	 * @param name
 	 *            The name this test run should have.
-	 * 
+	 *
 	 * @see #suite()
 	 */
 	public TypeTests(String name) {
@@ -68,7 +68,7 @@ public class TypeTests extends TestCase {
 	 * Use this method to add these tests to a larger test suite so set up and tear down can be
 	 * performed
 	 * </p>
-	 * 
+	 *
 	 * @return a {@link TestSetup} that will run all of the tests in this class
 	 *         with set up and tear down.
 	 */
@@ -76,7 +76,7 @@ public class TypeTests extends TestCase {
 		TestSuite ts = new TestSuite(TypeTests.class, TEST_NAME);
 
 		fTestProjectSetup = new TestProjectSetup(ts, "ContentAssist", "root", false);
-		
+
 		return fTestProjectSetup;
 	}
 

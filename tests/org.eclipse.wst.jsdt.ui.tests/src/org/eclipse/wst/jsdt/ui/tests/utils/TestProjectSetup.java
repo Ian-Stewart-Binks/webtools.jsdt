@@ -33,9 +33,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 
-import junit.extensions.TestSetup;
 import junit.framework.Assert;
-import junit.framework.Test;
 
 /**
  * <p>Sets up a test project.</p>
@@ -43,8 +41,8 @@ import junit.framework.Test;
  * @see org.eclipse.wst.jsdt.ui.tests.utils
  * @see org.eclipse.wst.jsdt.web.ui.tests.internal
  */
-@SuppressWarnings("nls")
-public class TestProjectSetup extends TestSetup {
+@SuppressWarnings({"nls", "restriction"})
+public class TestProjectSetup {
 	/** preference for ignoring WTP UI */
 	private static final String WTP_AUTOTEST_NONINTERACTIVE = "wtp.autotest.noninteractive";
 
@@ -97,8 +95,6 @@ public class TestProjectSetup extends TestSetup {
 	 */
 	private final String fLibraryFilesDestinationPath;
 
-
-
 	/**
 	 * <p>
 	 * <b>NOTE:</b> will not delete the project on tear down so other tests can use it.
@@ -112,8 +108,8 @@ public class TestProjectSetup extends TestSetup {
 	 *            path to the root directory to look for all files under, or <code>null</code> if
 	 *            look directly under project root
 	 */
-	public TestProjectSetup(Test test, String projectName, String rootDirectory) {
-		this(test, projectName, rootDirectory, false, null, null);
+	public TestProjectSetup(String projectName, String rootDirectory) {
+		this(projectName, rootDirectory, false, null, null);
 	}
 
 	/**
@@ -128,8 +124,8 @@ public class TestProjectSetup extends TestSetup {
 	 *            <code>true</code> if should delete project on tear down, <code>false</code> to
 	 *            leave it for other tests to use.
 	 */
-	public TestProjectSetup(Test test, String projectName, String rootDirectory, boolean deleteOnTearDown) {
-		this(test, projectName, rootDirectory, deleteOnTearDown, null, null);
+	public TestProjectSetup(String projectName, String rootDirectory, boolean deleteOnTearDown) {
+		this(projectName, rootDirectory, deleteOnTearDown, null, null);
 	}
 
 
@@ -152,10 +148,8 @@ public class TestProjectSetup extends TestSetup {
 	 *            imported into, if one is given. Or <code>null</code> if the given
 	 *            {@link #fLibraryFilePath} should be imported into the test project root
 	 */
-	public TestProjectSetup(Test test, String projectName, String rootDirectory, boolean deleteOnTearDown,
+	public TestProjectSetup(String projectName, String rootDirectory, boolean deleteOnTearDown,
 			String libraryFilePath, String libraryFilesDestinationPath) {
-
-		super(test);
 
 		this.fProjectName = projectName;
 		this.fRootDirectory = rootDirectory;
