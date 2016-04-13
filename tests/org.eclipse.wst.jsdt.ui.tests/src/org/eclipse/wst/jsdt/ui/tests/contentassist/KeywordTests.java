@@ -17,12 +17,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 @SuppressWarnings("nls")
 public class KeywordTests {
 	private static final Set<String> keywords = new HashSet<String>(27);
 	private static TestProjectSetup fTestProjectSetup;
 
+	@BeforeClass
 	public static void setup() throws Exception {
 		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
 		fTestProjectSetup.setUp();
@@ -65,6 +68,7 @@ public class KeywordTests {
 		keywords.add("yield");
 	}
 
+	@Test
 	public void testSingleLetterKeywordCompletionLowercase() throws Exception {
 		for (int i = 0; i < 26; i++) {
 			char ch = (char) ('a' + i);
@@ -74,6 +78,7 @@ public class KeywordTests {
 
 	}
 
+	@Test
 	public void testSingleLetterKeywordCompletionUppercase() throws Exception {
 		for (int i = 0; i < 26; i++) {
 			char ch = (char) ('a' + i);
