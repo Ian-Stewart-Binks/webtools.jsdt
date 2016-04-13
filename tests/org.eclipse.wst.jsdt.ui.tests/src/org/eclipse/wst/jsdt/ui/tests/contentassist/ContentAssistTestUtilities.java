@@ -30,8 +30,7 @@ import org.eclipse.wst.jsdt.internal.ui.text.html.HTML2TextReader;
 import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.eclipse.wst.jsdt.ui.text.JavaScriptSourceViewerConfiguration;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * <p>
@@ -253,7 +252,6 @@ public class ContentAssistTestUtilities {
 				int suggestion = 0;
 				for( ; (suggestion < pages[page].length) && !found; ++suggestion) {
 					String displayString = pages[page][suggestion].getDisplayString();
-					System.out.println(displayString + " and " + expectedProposal);
 					found = exactMatch ?
 							displayString.equals(expectedProposal) : displayString.indexOf(expectedProposal) != -1;
 				}
@@ -276,7 +274,9 @@ public class ContentAssistTestUtilities {
 				}
 			}
 		}
-
+		if (negativeTest) {
+			System.out.println(error.length());
+		}
 		// if errors report them
 		if(error.length() > 0) {
 			StringBuffer expected = new StringBuffer();

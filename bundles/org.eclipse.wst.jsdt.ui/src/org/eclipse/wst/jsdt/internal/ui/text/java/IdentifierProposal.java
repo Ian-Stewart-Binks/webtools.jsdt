@@ -7,6 +7,7 @@
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -29,7 +30,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 
 	private IRegion fRegion;
 	private Region fSelectedRegion;
-	private List<String> fields;
+	private List<IdentifierProposal> fields = new ArrayList<IdentifierProposal>();
 	private IdentifierType type;
 	private List<String> parameterNames;
 	private String name;
@@ -48,7 +49,6 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void apply(IDocument document) {
 		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
@@ -188,7 +188,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		return 0;
 	}
 
-	public void addField(String field) {
+	public void addField(IdentifierProposal field) {
 		this.fields.add(field);
 	}
 
@@ -196,7 +196,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		return this.name;
 	}
 
-	public List<String> getFields() {
+	public List<IdentifierProposal> getFields() {
 		return this.fields;
 	}
 

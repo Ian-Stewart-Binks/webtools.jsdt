@@ -62,6 +62,7 @@ public class IdentifierEngine {
 		}
 		ast.accept(visitor);
 		List<IdentifierProposal> identifierProposals = visitor.getIdentifiers(context.getKey());
+		System.out.println("Context Key: " + context.getKey());
 		for (IdentifierProposal idenProp : identifierProposals) {
 			idenProp.setRegion(region);
 		}
