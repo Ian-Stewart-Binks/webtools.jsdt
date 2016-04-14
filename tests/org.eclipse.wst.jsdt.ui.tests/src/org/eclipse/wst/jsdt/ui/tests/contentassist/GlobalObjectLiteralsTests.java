@@ -91,9 +91,9 @@ public class GlobalObjectLiteralsTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 10, 5, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFunctionOnFieldOnGlobalObjectLiteral_SameFile_0() throws Exception {
-		String[][] expectedProposals = new String[][] { { "fun() - {}", "crazy() - {}" } };
+		String[][] expectedProposals = new String[][] { { "fun()", "crazy()" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 12, 12, expectedProposals);
 	}
 
@@ -147,22 +147,22 @@ public class GlobalObjectLiteralsTests {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestGlobalObjectLiterals_1.js", 6, 12);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateGlobalObjectLiteral_SameFile_1() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 8, 1);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateFieldOnGlobalObjectLiteral_SameFile_0() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 10, 4);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateFieldOnGlobalObjectLiteral_SameFile_1() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 10, 5);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateFunctionOnFieldOnGlobalObjectLiteral_SameFile_0() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 12, 12);
 	}
