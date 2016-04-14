@@ -85,9 +85,9 @@ public class GlobalObjectLiteralsTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 10, 4, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldOnGlobalObjectLiteral_SameFile_1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "eclipse : {} - {}", "eclipse2 : {} - {}" } };
+		String[][] expectedProposals = new String[][] { { "eclipse", "eclipse2" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalObjectLiterals_0.js", 10, 5, expectedProposals);
 	}
 
