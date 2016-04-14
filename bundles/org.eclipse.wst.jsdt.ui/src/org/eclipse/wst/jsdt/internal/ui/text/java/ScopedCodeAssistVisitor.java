@@ -108,7 +108,9 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	private ArrayList<IdentifierProposal> identifiers = new ArrayList<IdentifierProposal>();
 	private String mostRecentSimpleName;
-	private Stack<IdentifierProposal> identifierProposalStack = new Stack<IdentifierProposal>();
+	private Stack<String> fieldNameStack = new Stack<String>();
+	private boolean inFieldAccess;
+	IdentifierProposal currentIdentifier;
 
 	int filePosition;
 	boolean global;
@@ -212,39 +214,15 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			IdentifierProposal proposal = new IdentifierProposal(name);
 			proposal.setIsGlobal(scopes.size() == 1);
 			identifiers.add(proposal);
-			identifierProposalStack.add(proposal);
+			currentIdentifier = proposal;
+			System.out.println("Adding identifier: " + proposal.getName());
 		}
 		return true;
 	}
 
 	public void endVisit(Assignment node) {
 		System.out.println("Assignment <<");
-//		if (!identifierExists(mostRecentSimpleName) && fieldNameStack.isEmpty()) {
-//			IdentifierProposal proposal = new IdentifierProposal(mostRecentSimpleName);
-//			if (node.toString().contains(".")) {
-//				 proposal = new IdentifierProposal(node.toString().split("\\.")[0]);
-//			}
-//
-//			proposal.setIsGlobal(scopes.size() == 1);
-//			identifiers.add(proposal);
-//			identifierProposalStack.add(proposal);
-//		} else if (!fieldNameStack.isEmpty()) {
-////			String fieldAccessAssignmentName = fieldNameStack.pop();
-////			if (fieldNameStack.isEmpty()) {
-////				IdentifierProposal proposal = new IdentifierProposal(fieldAccessAssignmentName);
-////				IdentifierProposal parentIdentifier = getIdentifier(mostRecentSimpleName);
-////
-////					String fieldAccessName = fieldNameStack.peek();
-////					IdentifierProposal field = new IdentifierProposal(fieldAccessName);
-////					IdentifierProposal parentIdentifier = getIdentifier(mostRecentSimpleName);
-////					if (parentIdentifier != null) {
-////						parentIdentifier.addField(field);
-////					}
-////				}
-//
-////			}
-//
-//		}
+		currentIdentifier = null;
 	}
 
 	public boolean visit(BlockComment node) {
@@ -365,6 +343,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		System.out.println("\t Parent is: "+ parent);
 		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
 			parent.addField(field);
+			currentIdentifier = field;
 		}
 	}
 
@@ -502,6 +481,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public void endVisit(SimpleName node) {
 		System.out.println("SimpleName <<");
+		if (inFieldAccess) {
+		}
 	}
 
 	public boolean visit(SimpleType node) {
@@ -515,13 +496,11 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		proposal.setIsGlobal(scopes.size() == 1);
 		System.out.println("Adding identifier: " + proposal.getName());
 		identifiers.add(proposal);
-		identifierProposalStack.add(proposal);
 		return true;
 	}
 
 	public void endVisit(SingleVariableDeclaration node) {
 		System.out.println("SingleVariableDeclaration >>");
-		identifierProposalStack.pop();
 	}
 
 	public boolean visit(StringLiteral node) {
@@ -596,12 +575,12 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		identifierProposal.setIsGlobal(scopes.size() == 1);
 		System.out.println("Adding identifier: " + node.getName().getIdentifier());
 		identifiers.add(identifierProposal);
-		identifierProposalStack.add(identifierProposal);
+		currentIdentifier = identifierProposal;
 		return true;
 	}
 
 	public void endVisit(VariableDeclarationFragment node) {
-		identifierProposalStack.pop();
+		currentIdentifier = null;
 		System.out.println("VariableDeclarationFragment <<");
 	}
 
@@ -635,19 +614,18 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public boolean visit(FunctionDeclaration node) {
 		System.out.println("FunctionDeclaration >>" + node);
-		Expression methodName = node.getMethodName();
-		String name;
-		if ((methodName == null) || (mostRecentSimpleName != null)) {
-			name = mostRecentSimpleName;
-		} else {
+		IdentifierProposal proposal;
+		if (currentIdentifier == null) {
+			String name;
+			Expression methodName = node.getMethodName();
 			name = methodName.toString();
+			proposal = new IdentifierProposal(name);
+			System.out.println("Adding identifier: " + proposal.getName());
+			identifiers.add(proposal);
+			proposal.setIsGlobal(scopes.size() == 1);
+		} else {
+			proposal = currentIdentifier;
 		}
-
-		IdentifierProposal proposal = new IdentifierProposal(name);
-		System.out.println("Adding identifier: " + proposal.getName());
-		identifiers.add(proposal);
-		identifierProposalStack.add(proposal);
-		proposal.setIsGlobal(scopes.size() == 1);
 
 		proposal.setType(IdentifierType.FUNCTION);
 		List<String> parameterNames = (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
@@ -677,7 +655,6 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			visitBackwards(node.parameters());
 		}
 
-		identifierProposalStack.pop();
 		// Doesn't recognize anything inside function body.
 		return false;
 	}
@@ -790,7 +767,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 
 	private boolean identifierExists(String identifierName, List<IdentifierProposal> proposals) {
-		return proposals.stream().filter(k -> k.getName().equals(identifierName)).collect(Collectors.toList()).size() > 0;
+		return proposals.stream().filter(k -> k.getName() == identifierName).collect(Collectors.toList()).size() > 0;
 	}
 
 	private void printIdentifierTree() {
