@@ -23,12 +23,12 @@ public class FunctionPrototypeTests {
 	@BeforeClass
 	public static void setup() throws Exception {
 		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
-		fTestProjectSetup.setUp();awef
+		fTestProjectSetup.setUp();
 	}
 
-	@Ignore @Test
+	@Test
 	public void testPrototypeFunction_SameFile() throws Exception {
-		String[][] expectedProposals = new String[][] { { "prototype - Function", "getServerIP() - FunctionPrototype0" } };
+		String[][] expectedProposals = new String[][] { { "prototype", "getServerIP() - FunctionPrototype0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_0.js", 25, 19, expectedProposals);
 	}
 
@@ -46,7 +46,7 @@ public class FunctionPrototypeTests {
 
 	@Ignore @Test
 	public void testSimpleFunction_OtherFile() throws Exception {
-		String[][] expectedProposals = new String[][] { { "prototype - Function" } };
+		String[][] expectedProposals = new String[][] { { "prototype" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_1.js", 2, 10, expectedProposals);
 	}
 
