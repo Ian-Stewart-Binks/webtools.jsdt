@@ -9,6 +9,7 @@ package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -24,6 +25,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.internal.ui.text.java.ScopedCodeAssistVisitor.Scope;
 import org.eclipse.wst.jsdt.ui.text.java.IJavaCompletionProposal;
 
 public class IdentifierProposal implements IJavaCompletionProposal, ICompletionProposalExtension2, ICompletionProposalExtension3, ICompletionProposalExtension4 {
@@ -35,6 +37,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	private List<String> parameterNames;
 	private String name;
 	private boolean isGlobal = false;
+	private IdentifierProposal parent;
 
 	public IdentifierProposal(String name) {
 		this.name = name;
@@ -70,6 +73,8 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	public String getDisplayString() {
 		if (this.isGlobal) {
 			return getProposalString() + " - Global";
+		} else if (this.parent != null) {
+			return getProposalString() + " - " + this.parent.getName();
 		}
 		return getProposalString();
 	}
@@ -211,8 +216,12 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	public void setJSdoc(JSdoc jsdoc) {
 	}
 
-	public void setIsGlobal(boolean val) {
-		this.isGlobal = val;
+	public void updateScope(Stack<Scope> scopes) {
+		this.isGlobal = scopes.size() == 1;
+	}
+
+	public void addParent(IdentifierProposal parent) {
+		this.parent = parent;
 	}
 
 }

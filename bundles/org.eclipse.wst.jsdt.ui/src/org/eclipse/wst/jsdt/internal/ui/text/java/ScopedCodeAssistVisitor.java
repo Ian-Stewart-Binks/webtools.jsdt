@@ -102,13 +102,13 @@ import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
  * Visit the AST following the scope for the position.
  * Marks all the variables, functions etc on the way for code completion.
  */
+@SuppressWarnings("nls")
 public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	// TODO: For recently used methods, create new visitor that extends ASTVisitor. Makes sense to cache that.
 
 	private ArrayList<IdentifierProposal> identifiers = new ArrayList<IdentifierProposal>();
 	private String mostRecentSimpleName;
-	private Stack<String> fieldNameStack = new Stack<String>();
 	private boolean inFieldAccess;
 	IdentifierProposal currentIdentifier;
 
@@ -135,10 +135,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			String[] splitString = key.split("\\.", 2);
 			String firstIdentifier = splitString[0];
 			String rest = splitString[1];
-			System.out.println("first is:" + firstIdentifier);
-			System.out.println("rest is:" + rest);
 			for (IdentifierProposal identifier : proposals) {
-				System.out.println("Checking : " + identifier.getName());
 				if (identifier.getName().equals(firstIdentifier)) {
 					return getIdentifiers(rest, identifier.getFields());
 				}
@@ -203,19 +200,23 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public boolean visit(Assignment node) {
 		System.out.println("Assignment >> " + node.toString());
+		String leftHandSide = node.toString().split("=")[0];
 		String name;
-		if (node.toString().contains(".")) {
+		if (leftHandSide.contains(".")) {
 			name = node.toString().split("\\.")[0];
 		} else {
-			name = node.toString().split("=")[0];
+			name = leftHandSide;
 		}
 
 		if (!identifierExists(name, identifiers)) {
 			IdentifierProposal proposal = new IdentifierProposal(name);
-			proposal.setIsGlobal(scopes.size() == 1);
+			proposal.updateScope(scopes);
 			identifiers.add(proposal);
 			currentIdentifier = proposal;
 			System.out.println("Adding identifier: " + proposal.getName());
+		} else {
+			IdentifierProposal proposal = getIdentifier(name);
+			proposal.updateScope(scopes);
 		}
 		return true;
 	}
@@ -343,6 +344,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		System.out.println("\t Parent is: "+ parent);
 		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
 			parent.addField(field);
+			field.addParent(parent);
 			currentIdentifier = field;
 		}
 	}
@@ -493,7 +495,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	public boolean visit(SingleVariableDeclaration node) {
 		System.out.println("SingleVariableDeclaration >>");
 		IdentifierProposal proposal = new IdentifierProposal(mostRecentSimpleName);
-		proposal.setIsGlobal(scopes.size() == 1);
+		proposal.updateScope(scopes);
 		System.out.println("Adding identifier: " + proposal.getName());
 		identifiers.add(proposal);
 		return true;
@@ -572,7 +574,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	public boolean visit(VariableDeclarationFragment node) {
 		System.out.println("VariableDeclarationFragment >>");
 		IdentifierProposal identifierProposal = new IdentifierProposal(node.getName().getIdentifier());
-		identifierProposal.setIsGlobal(scopes.size() == 1);
+		identifierProposal.updateScope(scopes);
 		System.out.println("Adding identifier: " + node.getName().getIdentifier());
 		identifiers.add(identifierProposal);
 		currentIdentifier = identifierProposal;
@@ -622,7 +624,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			proposal = new IdentifierProposal(name);
 			System.out.println("Adding identifier: " + proposal.getName());
 			identifiers.add(proposal);
-			proposal.setIsGlobal(scopes.size() == 1);
+			proposal.updateScope(scopes);
 		} else {
 			proposal = currentIdentifier;
 		}
