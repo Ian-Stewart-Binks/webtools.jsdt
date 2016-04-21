@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@SuppressWarnings("nls")asdas
+@SuppressWarnings("nls")
 public class FunctionPrototypeTests {
 	private static TestProjectSetup fTestProjectSetup;
 
@@ -53,7 +53,7 @@ public class FunctionPrototypeTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_1.js", 2, 10, expectedProposals);
 	}
 
-	@Test
+	@Ignore @Test
 	public void testNotGlobal_ThisFile() throws Exception {
 		String[][] expectedProposals = new String[][] { { "getServerIP()", "getClientIP" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "StaticTests_0.js", 37, 0, expectedProposals, true, false);
