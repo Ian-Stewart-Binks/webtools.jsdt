@@ -61,7 +61,7 @@ public class CamelCasingTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestConstructorCamelCase_1.js", 4, 8, expectedProposals);
 	}
 
-	@Test error
+	@Ignore @Test
 	public void testCamelCasing_ThisFile_Expression1() throws Exception {
 		String[][] expectedProposals = new String[][] { {
 				"mail.inbox.iGotStarredFun(param1) - mail.inbox.iGotStarredFun",
