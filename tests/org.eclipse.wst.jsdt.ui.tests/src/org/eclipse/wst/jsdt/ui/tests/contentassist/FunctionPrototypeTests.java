@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@SuppressWarnings("nls")
+@SuppressWarnings("nls")asdas
 public class FunctionPrototypeTests {
 	private static TestProjectSetup fTestProjectSetup;
 
@@ -26,21 +26,24 @@ public class FunctionPrototypeTests {
 		fTestProjectSetup.setUp();
 	}
 
-	@Test
+	@Ignore @Test
 	public void testPrototypeFunction_SameFile() throws Exception {
-		String[][] expectedProposals = new String[][] { { "prototype", "getServerIP() - FunctionPrototype0" } };
+		String[][] expectedProposals = new String[][] { { "prototype - FunctionPrototype0", "getServerIP() - FunctionPrototype0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_0.js", 25, 19, expectedProposals);
 	}
 
 	@Ignore @Test
 	public void testSimpleFunction_SameFile() throws Exception {
-		String[][] expectedProposals = new String[][] { { "prototype - Function" } };
+		String[][] expectedProposals = new String[][] { { "prototype - FunctionPrototype0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_0.js", 27, 10, expectedProposals);
 	}
 
 	@Ignore @Test
 	public void testPrototypeFunction_OtherFile() throws Exception {
-		String[][] expectedProposals = new String[][] { { "prototype - Function", "getServerIP() - FunctionPrototype0" } };
+		String[][] expectedProposals = new String[][] { {
+			"prototype - Function",
+			"getServerIP() - FunctionPrototype0"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_1.js", 0, 19, expectedProposals);
 	}
 
@@ -50,7 +53,7 @@ public class FunctionPrototypeTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestFunctionPrototype_1.js", 2, 10, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testNotGlobal_ThisFile() throws Exception {
 		String[][] expectedProposals = new String[][] { { "getServerIP()", "getClientIP" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "StaticTests_0.js", 37, 0, expectedProposals, true, false);

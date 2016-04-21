@@ -31,6 +31,7 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DefaultASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
@@ -96,18 +97,17 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
-import org.eclipse.wst.jsdt.internal.codeassist.HierarchicalASTVisitor;
 
 /**
  * Visit the AST following the scope for the position.
  * Marks all the variables, functions etc on the way for code completion.
  */
 @SuppressWarnings("nls")
-public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
+public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 
 	// TODO: For recently used methods, create new visitor that extends ASTVisitor. Makes sense to cache that.
 
-	private ArrayList<IdentifierProposal> identifiers = new ArrayList<IdentifierProposal>();
+//	private ArrayList<IdentifierProposal> identifiers = new ArrayList<IdentifierProposal>();
 	private String mostRecentSimpleName;
 	private boolean inFieldAccess;
 	IdentifierProposal currentIdentifier;
@@ -115,9 +115,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	int filePosition;
 	boolean global;
 	public Stack<Scope> scopes = new Stack<Scope>();
+	List<IdentifierProposal> identifiers = new ArrayList<IdentifierProposal>();
 
 	public class Scope {
-		ArrayList<CompletionProposal> proposals = new ArrayList<CompletionProposal>();
+		ArrayList<IdentifierProposal> proposals = new ArrayList<IdentifierProposal>();
 	}
 
 	public List<IdentifierProposal> getIdentifiers() {
@@ -126,7 +127,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public List<IdentifierProposal> getIdentifiers(String key) {
 		printIdentifierTree();
-		return getIdentifiers(key, identifiers);
+		List<IdentifierProposal> relevantProposals = getIdentifiers();
+		return getIdentifiers(key, relevantProposals);
 	}
 
 	private List<IdentifierProposal> getIdentifiers(String key, List<IdentifierProposal> proposals) {
@@ -148,7 +150,7 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 
 	public void clearIdentifierProposals() {
-		this.identifiers.clear();
+		this.scopes.clear();
 	}
 
 	public ScopedCodeAssistVisitor(int position) {
@@ -208,15 +210,14 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			name = leftHandSide;
 		}
 
-		if (!identifierExists(name, identifiers)) {
+
+//		if (!identifierExists(name, identifiers)) {
+		if (!identifierPreviouslyDeclared(name)) {
 			IdentifierProposal proposal = new IdentifierProposal(name);
-			proposal.updateScope(scopes);
-			identifiers.add(proposal);
+//			proposal.updateScope(scopes);
+			proposal.setIsGlobal(true);
+			addIdentifier(proposal, scopes.get(0).proposals);
 			currentIdentifier = proposal;
-			System.out.println("Adding identifier: " + proposal.getName());
-		} else {
-			IdentifierProposal proposal = getIdentifier(name);
-			proposal.updateScope(scopes);
 		}
 		return true;
 	}
@@ -299,14 +300,25 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			rootId = splitExpression[0];
 			parentId = splitExpression[splitExpression.length - 1];
 		} else {
-			return getIdentifier(fieldExpression.toString());
+			return getIdentifierFromScopes(fieldExpression.toString());
 		}
 
-		IdentifierProposal root = getIdentifier(rootId);
+		IdentifierProposal root = getIdentifierFromScopes(rootId);
 		if (root == null) {
 			return null;
 		}
 		return findField(parentId, root);
+	}
+
+	private IdentifierProposal getIdentifierFromScopes(String string) {
+		for (Scope scope : scopes) {
+			for (IdentifierProposal proposal : scope.proposals) {
+				if (proposal.getName().equals(string)) {
+					return proposal;
+				}
+			}
+		}
+		return null;
 	}
 
 	private IdentifierProposal findField(String fieldName, IdentifierProposal root) {
@@ -324,7 +336,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	private IdentifierProposal getIdentifier(String string) {
 		System.out.println("Getting " + string);
-		List<IdentifierProposal> matchingIdentifiers = identifiers.stream().filter(k -> k.getName().equals(string)).collect(Collectors.toList());
+		List<IdentifierProposal> relevantIdentifiers = getIdentifiers();
+		List<IdentifierProposal> matchingIdentifiers = relevantIdentifiers.stream().filter(k -> k.getName().equals(string)).collect(Collectors.toList());
 		if (matchingIdentifiers.isEmpty()) {
 			return null;
 		}
@@ -343,7 +356,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		IdentifierProposal parent = getFieldAccessParent(node.getName().toString(), node.getExpression());
 		System.out.println("\t Parent is: "+ parent);
 		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
-			parent.addField(field);
+//			parent.addField(field);
+			addIdentifier(field, parent.getFields());
 			field.addParent(parent);
 			currentIdentifier = field;
 		}
@@ -496,8 +510,9 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		System.out.println("SingleVariableDeclaration >>");
 		IdentifierProposal proposal = new IdentifierProposal(mostRecentSimpleName);
 		proposal.updateScope(scopes);
-		System.out.println("Adding identifier: " + proposal.getName());
-		identifiers.add(proposal);
+		if (isInside(node)) {
+			addIdentifier(proposal, scopes.peek().proposals);
+		}
 		return true;
 	}
 
@@ -573,11 +588,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public boolean visit(VariableDeclarationFragment node) {
 		System.out.println("VariableDeclarationFragment >>");
-		IdentifierProposal identifierProposal = new IdentifierProposal(node.getName().getIdentifier());
-		identifierProposal.updateScope(scopes);
-		System.out.println("Adding identifier: " + node.getName().getIdentifier());
-		identifiers.add(identifierProposal);
-		currentIdentifier = identifierProposal;
+		IdentifierProposal proposal = new IdentifierProposal(node.getName().getIdentifier());
+		proposal.updateScope(scopes);
+		addIdentifier(proposal, scopes.peek().proposals);
+		currentIdentifier = proposal;
 		return true;
 	}
 
@@ -611,6 +625,11 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 //			for (CompletionProposal proposal : scope.proposals) {
 //			}
 //		}
+			identifiers.addAll(scopes.peek().proposals);
+			System.out.println("Yeap this is added " + (scopes.peek() == scopes.get(0)));
+			System.out.println("Start: " + node.getStartPosition());
+			System.out.println("Length: " + node.getLength());
+		scopes.pop();
 		super.endVisit(node);
 	}
 
@@ -622,9 +641,8 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			Expression methodName = node.getMethodName();
 			name = methodName.toString();
 			proposal = new IdentifierProposal(name);
-			System.out.println("Adding identifier: " + proposal.getName());
-			identifiers.add(proposal);
 			proposal.updateScope(scopes);
+			addIdentifier(proposal, scopes.peek().proposals);
 		} else {
 			proposal = currentIdentifier;
 		}
@@ -634,28 +652,19 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 		proposal.setParameters(parameterNames);
 		proposal.setJSdoc(node.getJavadoc());
 
-		if (node.getName() == null) {
-			if (isInside(node)) {
-				Block body = node.getBody();
-				if (body != null) {
-					// New function scope
-					scopes.push(new Scope());
-					body.accept(this);
-				}
-				visitBackwards(node.parameters());
-			}
-			return false;
-		}
-
-		if (isInside(node)) {
+//		if (isInside(node)) {
 			Block body = node.getBody();
 			if (body != null) {
 				// New function scope
 				scopes.push(new Scope());
+				for (String parameterName : parameterNames) {
+					IdentifierProposal parameterProposal = new IdentifierProposal(parameterName);
+					addIdentifier(parameterProposal, scopes.peek().proposals);
+				}
 				body.accept(this);
 			}
 			visitBackwards(node.parameters());
-		}
+//		}
 
 		// Doesn't recognize anything inside function body.
 		return false;
@@ -663,6 +672,10 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 
 	public void endVisit(FunctionDeclaration node) {
 		System.out.println("FunctionDeclaration <<");
+		if (isInside(node)) {
+			identifiers.addAll(scopes.peek().proposals);
+		}
+		scopes.pop();
 	}
 
 	public boolean visit(Initializer node) {
@@ -769,11 +782,12 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 	}
 
 	private boolean identifierExists(String identifierName, List<IdentifierProposal> proposals) {
-		return proposals.stream().filter(k -> k.getName() == identifierName).collect(Collectors.toList()).size() > 0;
+		return proposals.stream().filter(k -> k.getName().equals(identifierName)).collect(Collectors.toList()).size() > 0;
 	}
 
 	private void printIdentifierTree() {
-		for (IdentifierProposal identifier : identifiers) {
+		List<IdentifierProposal> rootProposals = getIdentifiers();
+		for (IdentifierProposal identifier : rootProposals) {
 			System.out.println("> " + identifier.getName());
 			printIdentifierTree(1, identifier.getFields());
 		}
@@ -784,7 +798,32 @@ public class ScopedCodeAssistVisitor extends HierarchicalASTVisitor {
 			System.out.println("> " + new String(new char[indent]).replace("\0", "    ") + identifier.getName());
 			printIdentifierTree(indent + 1, identifier.getFields());
 		}
+	}
 
+	private void addIdentifier(IdentifierProposal proposal, List<IdentifierProposal> siblingIdentifiers) {
+		IdentifierProposal parent = proposal.getParent();
+		if (parent == null) {
+			if (identifierExists(proposal.getName(), siblingIdentifiers)) {
+				System.out.println("Found " + proposal.getName() + " in " + siblingIdentifiers.toString());
+				proposal.updateScope(scopes);
+			} else {
+				System.out.println("Adding identifier: " + proposal.getName());
+				siblingIdentifiers.add(proposal);
+//				scopes.peek().proposals.add(proposal);
+			}
+		}
+	}
+
+	private boolean identifierPreviouslyDeclared(String candidateProposalName) {
+		for (Scope scope : scopes) {
+			for (IdentifierProposal p : scope.proposals) {
+				System.out.println(p.getName());
+			}
+			if (identifierExists(candidateProposalName, scope.proposals)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 

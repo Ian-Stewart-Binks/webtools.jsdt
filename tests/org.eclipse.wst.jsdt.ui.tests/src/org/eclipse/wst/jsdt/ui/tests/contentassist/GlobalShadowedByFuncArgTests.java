@@ -20,15 +20,10 @@ public class GlobalShadowedByFuncArgTests {
 	private static TestProjectSetup fTestProjectSetup;
 
 	@BeforeClass
-	public static void setup() {
+	public static void setup() throws Exception {
 		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
-		try {
-			fTestProjectSetup.setUp();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		fTestProjectSetup.setUp();
 	}
-
 
 	@Ignore @Test
 	public void testGlobalShadowedByFuncArgTests_OtherFile_BeforeOpen() throws Exception {

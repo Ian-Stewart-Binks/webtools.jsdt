@@ -22,14 +22,11 @@ public class GlobalFunctionTests {
 	private static TestProjectSetup fTestProjectSetup;
 
 	@BeforeClass
-	public static void setup() {
+	public static void setup() throws Exception {
 		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
-		try {
-			fTestProjectSetup.setUp();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		fTestProjectSetup.setUp();
 	}
+
 
 	@Ignore @Test
 	public void testFindFunctions_OtherFile_BeforeOpen_ExpressionStarted_0() throws Exception {

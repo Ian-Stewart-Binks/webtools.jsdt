@@ -73,9 +73,10 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	public String getDisplayString() {
 		if (this.isGlobal) {
 			return getProposalString() + " - Global";
-		} else if (this.parent != null) {
-			return getProposalString() + " - " + this.parent.getName();
 		}
+//		else if (this.parent != null) {
+//			return getProposalString() + " - " + this.parent.getName();
+//		}
 		return getProposalString();
 	}
 
@@ -222,6 +223,14 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 
 	public void addParent(IdentifierProposal parent) {
 		this.parent = parent;
+	}
+
+	public IdentifierProposal getParent() {
+		return parent;
+	}
+
+	public void setIsGlobal(boolean b) {
+		isGlobal = b;
 	}
 
 }
