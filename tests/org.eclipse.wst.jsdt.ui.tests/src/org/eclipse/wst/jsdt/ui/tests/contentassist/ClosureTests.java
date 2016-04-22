@@ -49,9 +49,12 @@ public class ClosureTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalVarsDefinedInClosure_1.js", 6, 10, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testClosures_SameFile_EmptyLine() throws Exception {
-		String[][] expectedProposals = new String[][] { { "closure : {} - Global", "closure2 : {} - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"closure - Global",
+			"closure2 - Global"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobalVarsDefinedInClosure_0.js", 12, 0, expectedProposals);
 	}
 

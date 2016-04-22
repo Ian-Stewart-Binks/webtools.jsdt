@@ -143,21 +143,21 @@ public class CamelCasingTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test11_1.js", 7, 2, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testGlobalVar_CamelCasing_Thisfile_Expresssion1() throws Exception {
 		String[][] expectedProposals = new String[][] { {
-			"globalVarNum : Number - Global"
+			"globalVarNum - Global"
 		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test11_0.js", 15, 3, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testGlobalVar_CamelCasing_ThisFile_Expresssion2() throws Exception {
 		String[][] expectedProposals = new String[][] { {
-			"globalVarNum : Number - Global",
+			"globalVarNum - Global",
 			"globalVar - Global",
-			"globalVarObject : {} - Global",
-			"globalVarString : String - Global"
+			"globalVarObject - Global",
+			"globalVarString - Global"
 		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test11_0.js", 17, 2, expectedProposals);
 	}

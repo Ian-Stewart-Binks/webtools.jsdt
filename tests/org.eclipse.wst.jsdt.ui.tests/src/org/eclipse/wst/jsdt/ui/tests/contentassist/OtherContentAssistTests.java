@@ -13,6 +13,8 @@ package org.eclipse.wst.jsdt.ui.tests.contentassist;
 
 import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 @SuppressWarnings("nls")
 public class OtherContentAssistTests {
@@ -24,6 +26,7 @@ public class OtherContentAssistTests {
 		fTestProjectSetup.setUp();
 	}
 
+	@Ignore @Test
 	public void testFindFunctionOnType_OtherFile_ExpressionStarted_0() throws Exception {
 		String[][] expectedProposals = new String[][] { { "myFunc1(Number param1) : Number - Crazy",
 				"foo : String - Crazy" } };

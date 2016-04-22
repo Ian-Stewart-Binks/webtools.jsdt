@@ -25,124 +25,127 @@ public class GlobalsFieldAssignmentsTests {
 		fTestProjectSetup.setUp();
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindGlobalsDefinedFromFieldAssignments_0_1() throws Exception {
 		String[][] expectedProposals =
 				new String[][] { {
-						"global_FieldAssignments0 : {} - Global",
-						"global_FieldAssignments2 : {} - Global",
-						"global_FieldAssignments3 : {} - Global",
-						"global_FieldAssignments5 : {} - Global",
-						"global_FieldAssignments6 : {} - Global",
-						"global_FieldAssignments7 : {} - Global",
-						"global_FieldAssignments8 : {} - Global" } };
+						"global_FieldAssignments0 - Global",
+						"global_FieldAssignments2 - Global",
+						"global_FieldAssignments3 - Global",
+						"global_FieldAssignments5 - Global",
+						"global_FieldAssignments6 - Global",
+						"global_FieldAssignments7 - Global",
+						"global_FieldAssignments8 - Global"
+				} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_1.js", 0, 18, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindGlobalsDefinedFromFieldAssignments_0_2() throws Exception {
 		String[][] expectedProposals =
 				new String[][] { {
-						"global_FieldAssignments0 : {} - Global",
-						"global_FieldAssignments2 : {} - Global",
-						"global_FieldAssignments3 : {} - Global",
-						"global_FieldAssignments5 : {} - Global",
-						"global_FieldAssignments6 : {} - Global",
-						"global_FieldAssignments7 : {} - Global",
-						"global_FieldAssignments8 : {} - Global" } };
+						"global_FieldAssignments0 - Global",
+						"global_FieldAssignments2 - Global",
+						"global_FieldAssignments3 - Global",
+						"global_FieldAssignments5 - Global",
+						"global_FieldAssignments6 - Global",
+						"global_FieldAssignments7 - Global",
+						"global_FieldAssignments8 - Global"
+				} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 26, 18, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_0() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments0_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments0_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 28, 25, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_3() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments2_0 : {} - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments2_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 34, 25, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_4() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments2_0_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments2_0_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 36, 52, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_5() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments3_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments3_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 38, 25, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_8() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments5_0 : {} - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments5_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 46, 25, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_9() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments5_0_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments5_0_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 48, 52, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_10() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments6_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments6_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 50, 25, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_11() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments7_0 : {} - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments7_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 54, 25, expectedProposals,
 				false, true);
 	}
 
 	@Ignore @Test
 	public void testFindFieldsAssignedToGlobals_12() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments7_0_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments7_0_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 56, 52, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindFieldsAssignedToGlobals_13() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments8_0 : {} - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments8_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 58, 25, expectedProposals,
 				false, true);
 	}
 
 	@Ignore @Test
 	public void testFindFieldsAssignedToGlobals_14() throws Exception {
-		String[][] expectedProposals = new String[][] { { "global_FieldAssignments8_0_0 : Number - {}" } };
+		String[][] expectedProposals = new String[][] { { "global_FieldAssignments8_0_0" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_0.js", 60, 52, expectedProposals,
 				false, true);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindGlobalsDefinedFromFieldAssignments_0() throws Exception {
 		String[][] expectedProposals =
 				new String[][] { {
-						"global_FieldAssignments0 : {} - Global",
-						"global_FieldAssignments2 : {} - Global",
-						"global_FieldAssignments3 : {} - Global",
-						"global_FieldAssignments5 : {} - Global",
-						"global_FieldAssignments6 : {} - Global",
-						"global_FieldAssignments7 : {} - Global",
-						"global_FieldAssignments8 : {} - Global" } };
+						"global_FieldAssignments0 - Global",
+						"global_FieldAssignments2 - Global",
+						"global_FieldAssignments3 - Global",
+						"global_FieldAssignments5 - Global",
+						"global_FieldAssignments6 - Global",
+						"global_FieldAssignments7 - Global",
+						"global_FieldAssignments8 - Global"
+				} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestGlobals_FieldAssignments_1.js", 0, 18, expectedProposals,
 				false, true);
 	}

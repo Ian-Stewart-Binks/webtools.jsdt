@@ -32,16 +32,16 @@ public class LocalVarDefinedInFunctionInObjectLiteralTests {
 				unexpectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testLocalVarDefinedInFuncationInOBjectLiteral_ThisFile_InFunction() throws Exception {
-		String[][] expectedProposals = new String[][] { { "ninjaLocal : Number" } };
+		String[][] expectedProposals = new String[][] { { "ninjaLocal" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestLocalVarDefinedInFunctionInObjectLiteral_0.js", 3, 5,
 				expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testLocalVarDefinedInFuncationInOBjectLiteral_ThisFile_OutsideFunction_NegativeTest() throws Exception {
-		String[][] unexpectedProposals = new String[][] { { "ninjaLocal : Number - Global", "ninjaLocal : Number" } };
+		String[][] unexpectedProposals = new String[][] { { "ninjaLocal - Global", "ninjaLocal" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestLocalVarDefinedInFunctionInObjectLiteral_0.js", 7, 3,
 				unexpectedProposals, true, false);
 	}
