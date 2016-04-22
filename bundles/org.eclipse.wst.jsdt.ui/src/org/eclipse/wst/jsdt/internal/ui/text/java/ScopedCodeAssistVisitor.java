@@ -144,7 +144,7 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 			}
 			return Collections.emptyList();
 		} else {
-			return proposals.stream().filter(k -> k.getName().startsWith(key)).collect(Collectors.toList());
+			return proposals.stream().filter(k -> k.getName().startsWith(key) || k.getCamelCaseName().startsWith(key)).collect(Collectors.toList());
 		}
 
 	}
@@ -212,12 +212,15 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 
 
 //		if (!identifierExists(name, identifiers)) {
-		if (!identifierPreviouslyDeclared(name)) {
+		IdentifierProposal previouslyDeclaredProposal = identifierPreviouslyDeclared(name);
+		if (previouslyDeclaredProposal == null) {
 			IdentifierProposal proposal = new IdentifierProposal(name);
 //			proposal.updateScope(scopes);
 			proposal.setIsGlobal(true);
 			addIdentifier(proposal, scopes.get(0).proposals);
 			currentIdentifier = proposal;
+		} else {
+			currentIdentifier = previouslyDeclaredProposal;
 		}
 		return true;
 	}
@@ -334,20 +337,29 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		return null;
 	}
 
-	private IdentifierProposal getIdentifier(String string) {
-		System.out.println("Getting " + string);
-		List<IdentifierProposal> relevantIdentifiers = getIdentifiers();
-		List<IdentifierProposal> matchingIdentifiers = relevantIdentifiers.stream().filter(k -> k.getName().equals(string)).collect(Collectors.toList());
-		if (matchingIdentifiers.isEmpty()) {
-			return null;
-		}
-		return matchingIdentifiers.get(0);
-	}
-
 	public boolean visit(FieldAccess node) {
 		System.out.println("FieldAccess >> " + node.getName() + " Expression: " + node.getExpression());
 
 		return true;
+	}
+
+	public IdentifierProposal addParent(String expression) {
+		String[] splitExpression = expression.split("\\.");
+		IdentifierProposal parent = null, root = null;
+		for (String identifier : splitExpression) {
+			if (parent == null) {
+				parent = new IdentifierProposal(identifier);
+				parent.updateScope(scopes);
+				root = parent;
+				addIdentifier(parent, scopes.peek().proposals);
+			} else {
+				IdentifierProposal field = new IdentifierProposal(identifier);
+				parent.addField(field);
+				parent = field;
+			}
+		}
+
+		return root;
 	}
 
 	public void endVisit(FieldAccess node) {
@@ -355,6 +367,9 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		IdentifierProposal field = new IdentifierProposal(node.getName().toString());
 		IdentifierProposal parent = getFieldAccessParent(node.getName().toString(), node.getExpression());
 		System.out.println("\t Parent is: "+ parent);
+		if (parent == null) {
+			parent = addParent(node.getExpression().toString());
+		}
 		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
 //			parent.addField(field);
 			addIdentifier(field, parent.getFields());
@@ -517,7 +532,7 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 	}
 
 	public void endVisit(SingleVariableDeclaration node) {
-		System.out.println("SingleVariableDeclaration >>");
+		System.out.println("SingleVariableDeclaration <<");
 	}
 
 	public boolean visit(StringLiteral node) {
@@ -635,36 +650,41 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 
 	public boolean visit(FunctionDeclaration node) {
 		System.out.println("FunctionDeclaration >>" + node);
-		IdentifierProposal proposal;
+
+		Expression methodName = node.getMethodName();
+		IdentifierProposal proposal = null;
+		List<String> parameterNames = new ArrayList<String>();
 		if (currentIdentifier == null) {
 			String name;
-			Expression methodName = node.getMethodName();
-			name = methodName.toString();
-			proposal = new IdentifierProposal(name);
-			proposal.updateScope(scopes);
-			addIdentifier(proposal, scopes.peek().proposals);
+
+			if (methodName != null) {
+				name = methodName.toString();
+				proposal = new IdentifierProposal(name);
+				proposal.updateScope(scopes);
+				addIdentifier(proposal, scopes.peek().proposals);
+			}
 		} else {
 			proposal = currentIdentifier;
 		}
 
-		proposal.setType(IdentifierType.FUNCTION);
-		List<String> parameterNames = (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
-		proposal.setParameters(parameterNames);
-		proposal.setJSdoc(node.getJavadoc());
+		if (proposal != null) {
+			proposal.setType(IdentifierType.FUNCTION);
+			parameterNames = (List<String>) node.parameters().stream().map(k -> ((SingleVariableDeclaration) k).getName().toString()).collect(Collectors.toList());
+			proposal.setParameters(parameterNames);
+			proposal.setJSdoc(node.getJavadoc());
+		}
 
-//		if (isInside(node)) {
-			Block body = node.getBody();
-			if (body != null) {
-				// New function scope
-				scopes.push(new Scope());
-				for (String parameterName : parameterNames) {
-					IdentifierProposal parameterProposal = new IdentifierProposal(parameterName);
-					addIdentifier(parameterProposal, scopes.peek().proposals);
-				}
-				body.accept(this);
+		Block body = node.getBody();
+		if (body != null) {
+			// New function scope
+			scopes.push(new Scope());
+			for (String parameterName : parameterNames) {
+				IdentifierProposal parameterProposal = new IdentifierProposal(parameterName);
+				addIdentifier(parameterProposal, scopes.peek().proposals);
 			}
-			visitBackwards(node.parameters());
-//		}
+			body.accept(this);
+		}
+		visitBackwards(node.parameters());
 
 		// Doesn't recognize anything inside function body.
 		return false;
@@ -814,16 +834,20 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		}
 	}
 
-	private boolean identifierPreviouslyDeclared(String candidateProposalName) {
+	private IdentifierProposal identifierPreviouslyDeclared(String candidateProposalName) {
 		for (Scope scope : scopes) {
 			for (IdentifierProposal p : scope.proposals) {
 				System.out.println(p.getName());
+				if (candidateProposalName.equals(p.getName())) {
+					return p;
+				}
 			}
-			if (identifierExists(candidateProposalName, scope.proposals)) {
-				return true;
-			}
+//			IdentifierProposal proposal = get
+//			if (identifierExists(candidateProposalName, scope.proposals)) {
+//				return true;
+//			}
 		}
-		return false;
+		return null;
 	}
 
 

@@ -26,8 +26,6 @@ public class DoublyNestedFunctionTests {
 		fTestProjectSetup.setUp();
 	}
 
-	//	Tests for doubly nested functions
-
 	@Ignore @Test
 	public void testFindInnerFunctions2_OtherFile_BeforeOpen_ExpressionNotStarted() throws Exception {
 		String[][] expectedProposals = new String[][] { { "outerFunc() - Global" } };
@@ -41,66 +39,92 @@ public class DoublyNestedFunctionTests {
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_1.js", 4, 1, unexpectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions2_ThisFile_Expression1() throws Exception {
-		String[][] expectedProposals = new String[][] { { "outerFunc() - Global", "innerFunc()" } };
+		String[][] expectedProposals = new String[][] { {
+			"outerFunc() - Global",
+			"innerFunc()"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 3, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void test_InnerFunctions2_ThisFile_NegativeTest_Expression1() throws Exception {
-		String[][] unexpectedProposals = new String[][] { { "insideInnerFunc()", "localInnerFunc",
-				"localInnerFunc(param1)" } };
+		String[][] unexpectedProposals = new String[][] { {
+			"insideInnerFunc()",
+			"localInnerFunc(param1)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 2, 0, unexpectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions2_ThisFile_Expression2() throws Exception {
-		String[][] expectedProposals = new String[][] { { "outerFunc() - Global", "innerFunc()", "insideInnerFunc()" } };
+		String[][] expectedProposals = new String[][] { {
+			"outerFunc() - Global",
+			"innerFunc()",
+			"insideInnerFunc()"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 7, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void test_FindInnerFunctions2_ThisFile_NegativeTest_Expression2() throws Exception {
-		String[][] unexpectedProposals = new String[][] { { "localInnerFunc : Function", "localInnerFunc(param1)" } };
+		String[][] unexpectedProposals = new String[][] { {
+			"localInnerFunc(param1)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 5, 0, unexpectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions2_ThisFile_Expression3() throws Exception {
-		String[][] expectedProposals = new String[][] { { "outerFunc() - Global", "innerFunc()", "insideInnerFunc()",
-				"localInnerFunc : Function", "localInnerFunc(param1)" } };
+		String[][] expectedProposals = new String[][] { {
+			"outerFunc() - Global",
+			"innerFunc()",
+			"insideInnerFunc()",
+			"localInnerFunc(param1)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 12, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions2_ThisFile_Expression4() throws Exception {
-		String[][] expectedProposals = new String[][] { { "outerFunc() - Global", "innerFunc()", "insideInnerFunc()" } };
+		String[][] expectedProposals = new String[][] { {
+			"outerFunc() - Global",
+			"innerFunc()",
+			"insideInnerFunc()"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 15, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void test_FindInnerFunctions2_ThisFile_NegativeTest_Expression4() throws Exception {
-		String[][] unexpectedProposals = new String[][] { { "localInnerFunc : Function", "localInnerFunc(param1)" } };
+		String[][] unexpectedProposals = new String[][] { {
+			"localInnerFunc(param1)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 15, 0, unexpectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions2_ThisFile_Expression5() throws Exception {
 		String[][] expectedProposals = new String[][] { { "outerFunc() - Global" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 21, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void test_FindInnerFunctions2_ThisFile_NegativeTest_Expression5() throws Exception {
-		String[][] unexpectedProposals = new String[][] { { "innerFunc()", "insideInnerFunc()",
-				"localInnerFunc : Function", "localInnerFunc(param1)" } };
+		String[][] unexpectedProposals = new String[][] { {
+			"innerFunc()",
+			"insideInnerFunc()",
+			"localInnerFunc(param1)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_0.js", 21, 0, unexpectedProposals, true, false);
 	}
 
 	@Ignore @Test
 	public void testFindInnerFunctions2_OtherFile_AfterOpen_ExpressionNotStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "outerFunc() - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"outerFunc() - Global"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test13_1.js", 0, 0, expectedProposals);
 	}
 

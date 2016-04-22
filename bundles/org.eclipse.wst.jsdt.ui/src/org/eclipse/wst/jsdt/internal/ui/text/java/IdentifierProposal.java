@@ -233,4 +233,17 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		isGlobal = b;
 	}
 
+	public String getCamelCaseName() {
+		return this.getName().charAt(0) + getCaptialLetters(this.getName().substring(1));
+	}
+
+	private String getCaptialLetters(String s) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			if (Character.isUpperCase(s.charAt(i))) {
+				sb.append(s.charAt(i));
+			}
+		}
+		return sb.toString();
+	}
 }

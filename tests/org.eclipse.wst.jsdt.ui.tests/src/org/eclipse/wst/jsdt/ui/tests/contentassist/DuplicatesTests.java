@@ -130,12 +130,12 @@ public class DuplicatesTests {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "test13_0.js", 2, 2);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testForDuplicates_Expression20() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "test13_1.js", 4, 1);
 	}
 
-	@Ignore @Test
+	@Ignore @Test // TODO: Halts tests?
 	public void testForDuplicates_Expression21() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "test0_0.js", 51, 1);
 	}

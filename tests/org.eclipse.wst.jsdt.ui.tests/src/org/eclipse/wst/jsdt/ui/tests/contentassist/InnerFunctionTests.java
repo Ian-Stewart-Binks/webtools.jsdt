@@ -28,8 +28,11 @@ public class InnerFunctionTests {
 
 	@Ignore @Test
 	public void testFindInnerFunctions_OtherFile_BeforeOpen_EmptyLine() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-				"funcTenInner2 : Function - Global", "funcTenInner2(param1, param2) - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner2 - Global",
+			"funcTenInner2(param1, param2) - Global"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_1.js", 0, 0, expectedProposals);
 	}
 
@@ -73,120 +76,143 @@ public class InnerFunctionTests {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_1.js", 4, 2);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_InsideInnerFunction_InsideFunctionCall_ExpressionStarted()
 	throws Exception {
-		String[][] expectedProposals = new String[][] { { "subtract(x, y) : Number" } };
+		String[][] expectedProposals = new String[][] { { "subtract(x, y)" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 24, 3, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_InsideInnerFunction_EmptyLine() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-				"funcTenInner1 : Function", "funcTenInner2 : Function - Global", "funcTenInner3 : Function",
-				"funcTenInner(newParam111, newParam222) : String", "funcTenInner1(param1)",
-				"funcTenInner2(param1, param2) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner(newParam111, newParam222)",
+			"funcTenInner1(param1)",
+			"funcTenInner2(param1, param2) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 26, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_InsideInnerFunction_ExpressionStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-			"funcTenInner1 : Function", "funcTenInner2 : Function - Global", "funcTenInner3 : Function",
-			"funcTenInner(newParam111, newParam222) : String", "funcTenInner1(param1)",
-			"funcTenInner2(param1, param2) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner(newParam111, newParam222)",
+			"funcTenInner1(param1)",
+			"funcTenInner2(param1, param2) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 27, 5, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_InsideInnerFunction_CamelCase() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-			"funcTenInner1 : Function", "funcTenInner2 : Function - Global", "funcTenInner3 : Function",
-			"funcTenInner(newParam111, newParam222) : String", "funcTenInner1(param1)",
-			"funcTenInner2(param1, param2) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner(newParam111, newParam222)",
+			"funcTenInner1(param1)",
+			"funcTenInner2(param1, param2) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 28, 2, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_InsideInnerFunction_ExpressionStarted2() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-			"funcTenInner1 : Function", "funcTenInner2 : Function - Global", "funcTenInner3 : Function",
-			"funcTenInner(newParam111, newParam222) : String", "funcTenInner1(param1)",
-			"funcTenInner2(param1, param2) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner(newParam111, newParam222)",
+			"funcTenInner1(param1)",
+			"funcTenInner2(param1, param2) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 29, 1, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_EmptyLine() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-				"funcTenInner2 : Function - Global", "funcTenInner2(param1, param2) - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner2(param1, param2) - Global"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 32, 0, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_ExpressionStarted() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-				"funcTenInner2 : Function - Global", "funcTenInner2(param1, param2) - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner2(param1, param2) - Global"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 33, 5, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_CamelCase() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTen(paramEleven, paramTwelve) - Global",
-				"funcTenInner2 : Function - Global", "funcTenInner2(param1, param2) - Global" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTen(paramEleven, paramTwelve) - Global",
+			"funcTenInner2(param1, param2) - Global" } };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 34, 2, expectedProposals);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_EmptyLine_NegativeTest() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTenInner : Function - Global",
-				"funcTenInner1 : Function - Global", "funcTenInner3 : Function", "funcTenInner(newParam111, newParam222) : String - Global",
-				"funcTenInner1(param1) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTenInner(newParam111, newParam222) - Global",
+			"funcTenInner1(param1) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 32, 0, expectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_ExpressionStarted_NegativeTest() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTenInner : Function - Global",
-			"funcTenInner1 : Function - Global", "funcTenInner3 : Function", "funcTenInner(newParam111, newParam222) : String - Global",
-			"funcTenInner1(param1) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTenInner(newParam111, newParam222) - Global",
+			"funcTenInner1(param1) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 33, 5, expectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindInnerFunctions_SameFile_OutsideInnerFunction_CamelCase_NegativeTest() throws Exception {
-		String[][] expectedProposals = new String[][] { { "funcTenInner : Function - Global",
-			"funcTenInner1 : Function - Global", "funcTenInner3 : Function", "funcTenInner(newParam111, newParam222) : String - Global",
-			"funcTenInner1(param1) - Global", "funcTenInner3(param1, param2)" } };
+		String[][] expectedProposals = new String[][] { {
+			"funcTenInner(newParam111, newParam222) - Global",
+			"funcTenInner1(param1) - Global",
+			"funcTenInner3(param1, param2)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestInnerFunctions_0.js", 34, 2, expectedProposals, true, false);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_OutsideInnerFunction_ExpressionStarted_0() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 33, 5);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_OutsideInnerFunction_ExpressionStarted_1() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 37, 1);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_OutsideInnerFunction_CamelCase() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 34, 2);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_InsideInnerFunction_ExpressionStarted_0() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 27, 5);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_InsideInnerFunction_ExpressionStarted_1() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 29, 1);
 	}
 
-	@Ignore @Test
+	@Test
 	public void testFindDuplicateInnerFunctions_SameFile_InsideInnerFunction_CamelCase() throws Exception {
 		ContentAssistTestUtilities.verifyNoDuplicates(fTestProjectSetup, "TestInnerFunctions_0.js", 28, 2);
 	}

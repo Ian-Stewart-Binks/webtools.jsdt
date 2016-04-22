@@ -27,7 +27,6 @@ public class DoublyNestedFunctionTests_Edited {
 		editFile_test13_0();
 	}
 
-	@Ignore @Test
 	public static void editFile_test13_0() throws Exception {
 		fTestProjectSetup.editFile("test13_0.js", 8, 11, 6, "edited");
 		fTestProjectSetup.editFile("test13_0.js", 0, 9, 9, "editedFunc");

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.wst.jsdt.ui.tests.utils.TestProjectSetup;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 @SuppressWarnings("nls")
@@ -68,7 +69,7 @@ public class KeywordTests {
 		keywords.add("yield");
 	}
 
-	@Test
+	@Ignore @Test
 	public void testSingleLetterKeywordCompletionLowercase() throws Exception {
 		for (int i = 0; i < 26; i++) {
 			char ch = (char) ('a' + i);
@@ -78,7 +79,7 @@ public class KeywordTests {
 
 	}
 
-	@Test
+	@Ignore @Test
 	public void testSingleLetterKeywordCompletionUppercase() throws Exception {
 		for (int i = 0; i < 26; i++) {
 			char ch = (char) ('a' + i);
