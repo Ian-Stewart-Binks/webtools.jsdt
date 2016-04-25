@@ -20,7 +20,7 @@ import org.junit.Test;
 public class DoublyNestedFunctionTests_Edited {
 	private static TestProjectSetup fTestProjectSetup;
 
-	@BeforeClass
+	@Ignore @BeforeClass
 	public static void setup() throws Exception {
 		fTestProjectSetup = new TestProjectSetup("ContentAssist", "root", false);
 		fTestProjectSetup.setUp();
