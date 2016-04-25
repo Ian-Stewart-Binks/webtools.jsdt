@@ -125,6 +125,14 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		return identifiers;
 	}
 
+	public List<IdentifierProposal> getCurrentIdentifiers() {
+		List<IdentifierProposal> scopedIdentifiers = new ArrayList<IdentifierProposal>();
+		for (Scope scope : scopes) {
+			scopedIdentifiers.addAll(0, scope.proposals);
+		}
+		return scopedIdentifiers;
+	}
+
 	public List<IdentifierProposal> getIdentifiers(String key) {
 		printIdentifierTree();
 		List<IdentifierProposal> relevantProposals = getIdentifiers();
@@ -146,7 +154,32 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		} else {
 			return proposals.stream().filter(k -> k.getName().startsWith(key) || k.getCamelCaseName().startsWith(key)).collect(Collectors.toList());
 		}
+	}
 
+	public IdentifierProposal getIdentifier(String key) {
+		printIdentifierTree();
+		List<IdentifierProposal> relevantProposals = getCurrentIdentifiers();
+		return getIdentifier(key, relevantProposals);
+	}
+
+	private IdentifierProposal getIdentifier(String key, List<IdentifierProposal> proposals) {
+		System.out.println("Looking for... " + key);
+		if (key.contains(".")) {
+			String[] splitString = key.split("\\.", 2);
+			String firstIdentifier = splitString[0];
+			String rest = splitString[1];
+			for (IdentifierProposal identifier : proposals) {
+				if (identifier.getName().equals(firstIdentifier)) {
+					return getIdentifier(rest, identifier.getFields());
+				}
+			}
+		} else {
+			List<IdentifierProposal> matches = proposals.stream().filter(k -> k.getName().equals(key)).collect(Collectors.toList());
+			if (!matches.isEmpty()) {
+				return matches.get(0);
+			}
+		}
+		return null;
 	}
 
 	public void clearIdentifierProposals() {
@@ -210,12 +243,9 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 			name = leftHandSide;
 		}
 
-
-//		if (!identifierExists(name, identifiers)) {
 		IdentifierProposal previouslyDeclaredProposal = identifierPreviouslyDeclared(name);
 		if (previouslyDeclaredProposal == null) {
 			IdentifierProposal proposal = new IdentifierProposal(name);
-//			proposal.updateScope(scopes);
 			proposal.setIsGlobal(true);
 			addIdentifier(proposal, scopes.get(0).proposals);
 			currentIdentifier = proposal;
@@ -441,6 +471,13 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 	public boolean visit(FunctionInvocation node) {
 		System.out.println("FunctionInvocation >>");
 		return true;
+	}
+
+	public void endVisit(FunctionInvocation node) {
+		System.out.println("FunctionInvocation <<");
+		System.out.println(node);
+		IdentifierProposal identifier = getIdentifier(node.toString().substring(0, node.toString().length() - 2));
+		identifier.setType(IdentifierType.FUNCTION);
 	}
 
 	public boolean visit(Modifier node) {
@@ -842,10 +879,6 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 					return p;
 				}
 			}
-//			IdentifierProposal proposal = get
-//			if (identifierExists(candidateProposalName, scope.proposals)) {
-//				return true;
-//			}
 		}
 		return null;
 	}

@@ -34,7 +34,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	private Region fSelectedRegion;
 	private List<IdentifierProposal> fields = new ArrayList<IdentifierProposal>();
 	private IdentifierType type;
-	private List<String> parameterNames;
+	private List<String> parameterNames = new ArrayList<String>();
 	private String name;
 	private boolean isGlobal = false;
 	private IdentifierProposal parent;
@@ -187,7 +187,7 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public int getRelevance() {
 		// TODO Auto-generated method stub
-		return 0;
+		return 1;
 	}
 
 	public void addField(IdentifierProposal field) {
