@@ -74,9 +74,6 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 		if (this.isGlobal) {
 			return getProposalString() + " - Global";
 		}
-//		else if (this.parent != null) {
-//			return getProposalString() + " - " + this.parent.getName();
-//		}
 		return getProposalString();
 	}
 
@@ -141,14 +138,13 @@ public class IdentifierProposal implements IJavaCompletionProposal, ICompletionP
 	 */
 	public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
 		IDocument document = viewer.getDocument();
-
 		try {
 			document.replace(fRegion.getOffset(), offset - fRegion.getOffset(), getProposalString());
+			this.fSelectedRegion = new Region(fRegion.getOffset() + this.name.length(), 0);
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
 
-		this.fSelectedRegion = new Region(fRegion.getOffset() + this.name.length(), 0);
 	}
 
 	/* (non-Javadoc)

@@ -55,9 +55,14 @@ public class AlreadyDefinedFunctionAssingedToFieldTests {
 
 	@Ignore @Test
 	public void testAlreadyDefinedFunctionAssingedToField_OtherFile_AfterOpen_0() throws Exception {
-		String[][] expectedProposals = new String[][] { { "func7 : Function - {}", "func8 : Function - {}",
-				"func9 : Function - {}", "func7(test) : String - {}", "func8(blarg) : Number - {}",
-				"func9(foo) : Boolean - {}" } };
+		String[][] expectedProposals = new String[][] { {
+			"func7",
+			"func8",
+			"func9",
+			"func7(test)",
+			"func8(blarg)",
+			"func9(foo)"
+		} };
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "TestAlreadyDefinedFunctionAssingedToField_2.js", 0, 40,
 				expectedProposals, false, true);
 	}

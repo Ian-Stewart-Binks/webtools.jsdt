@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -295,7 +296,7 @@ public class TestProjectSetup {
 		fProject = root.getProject(this.fProjectName);
 
 		// setup project if it is not yet setup
-		if((fProject == null) || !fProject.exists()) {
+		if ((fProject == null) || !fProject.exists()) {
 			fProject = BundleResourceUtil.createSimpleProject(this.fProjectName, null, null);
 		}
 		BundleResourceUtil.copyBundleEntriesIntoWorkspace(TESTING_RESOURCES_DIR + IPath.SEPARATOR + this.fProjectName,
@@ -319,7 +320,7 @@ public class TestProjectSetup {
 
 		// run any additional test setup
 		this.additionalSetUp();
-
+		fProject.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		// give the workspace a second to settle before running tests
 		Thread.sleep(1000);
 		waitForIndexManager();
