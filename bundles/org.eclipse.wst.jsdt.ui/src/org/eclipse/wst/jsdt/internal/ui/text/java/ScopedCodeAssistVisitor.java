@@ -111,6 +111,7 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 	private String mostRecentSimpleName;
 	private boolean inFieldAccess;
 	IdentifierProposal currentIdentifier;
+	IdentifierProposal identifierMemory;
 
 	int filePosition;
 	boolean global;
@@ -235,6 +236,7 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 
 	public boolean visit(Assignment node) {
 		System.out.println("Assignment >> " + node.toString());
+		// TODO make sure it is =.
 		String leftHandSide = node.toString().split("=")[0];
 		String name;
 		if (leftHandSide.contains(".")) {
@@ -401,7 +403,6 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 			parent = addParent(node.getExpression().toString());
 		}
 		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
-//			parent.addField(field);
 			addIdentifier(field, parent.getFields());
 			field.addParent(parent);
 			currentIdentifier = field;
@@ -477,7 +478,9 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 		System.out.println("FunctionInvocation <<");
 		System.out.println(node);
 		IdentifierProposal identifier = getIdentifier(node.toString().substring(0, node.toString().length() - 2));
-		identifier.setType(IdentifierType.FUNCTION);
+		if (identifier != null) {
+			identifier.setType(IdentifierType.FUNCTION);
+		}
 	}
 
 	public boolean visit(Modifier node) {
@@ -813,8 +816,22 @@ public class ScopedCodeAssistVisitor extends DefaultASTVisitor {
 
 	public boolean visit(ObjectLiteralField node) {
 		System.out.println("ObjectLiteralField >> " + node.getFieldName());
+		IdentifierProposal field = new IdentifierProposal(node.getFieldName().toString());
+		IdentifierProposal parent = currentIdentifier;
+		identifierMemory = parent;
+		if ((parent != null) && !identifierExists(field.getName(), parent.getFields())) {
+			addIdentifier(field, parent.getFields());
+			field.addParent(parent);
+			currentIdentifier = field;
+		}
 //		variableStack.peek().addField(node.getFieldName().toString());
 		return true;
+	}
+
+	public void endVisit(ObjectLiteralField node) {
+		System.out.println("ObjectLiteralField <<");
+		currentIdentifier = identifierMemory;
+
 	}
 
 	public boolean visit(TypeDeclarationStatement node) {
