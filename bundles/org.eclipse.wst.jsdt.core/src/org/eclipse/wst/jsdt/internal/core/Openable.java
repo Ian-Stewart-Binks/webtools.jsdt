@@ -96,8 +96,7 @@ public boolean canBufferBeRemovedFromCache(IBuffer buffer) {
  * Close the buffer associated with this element, if any.
  */
 protected void closeBuffer() {
-	if (!hasBuffer())
-	 {
+	if (!hasBuffer()) {
 		return; // nothing to do
 	}
 	IBuffer buffer = getBufferManager().getBuffer(this);
@@ -129,7 +128,6 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 	if ((position < -1) || (position > buffer.getLength())) {
 		throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS));
 	}
-	getJavaScriptProject();
 
 	ASTHolderCUInfo info = new ASTHolderCUInfo();
 	info.astLevel = AST.JLS3;
@@ -139,10 +137,6 @@ protected void codeComplete(org.eclipse.wst.jsdt.internal.compiler.env.ICompilat
 	openWhenClosed(info, new NullProgressMonitor());
 	if(performanceStats != null) {
 		performanceStats.endRun();
-	}
-	if (NameLookup.VERBOSE) {
-//		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInSourcePackage: " + environment.nameLookup.timeSpentInSeekTypesInSourcePackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
-//		System.out.println(Thread.currentThread() + " TIME SPENT in NameLoopkup#seekTypesInBinaryPackage: " + environment.nameLookup.timeSpentInSeekTypesInBinaryPackage + "ms");  //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
 protected IJavaScriptElement[] codeSelect(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit cu, int offset, int length, WorkingCopyOwner owner) throws JavaScriptModelException {
@@ -197,8 +191,7 @@ public boolean exists() {
 		return false;
 	}
 	PackageFragmentRoot root = getPackageFragmentRoot();
-	if ((root != null)
-			&& ((root == this) || !root.isArchive())) {
+	if ((root != null) && ((root == this) || !root.isArchive())) {
 		return resourceExists();
 	}
 	return super.exists();
@@ -463,8 +456,7 @@ protected boolean parentExists(){
  */
 protected boolean resourceExists() {
 	IWorkspace workspace = ResourcesPlugin.getWorkspace();
-	if (workspace == null)
-	 {
+	if (workspace == null) {
 		return false; // workaround for http://bugs.eclipse.org/bugs/show_bug.cgi?id=34069
 	}
 	return
