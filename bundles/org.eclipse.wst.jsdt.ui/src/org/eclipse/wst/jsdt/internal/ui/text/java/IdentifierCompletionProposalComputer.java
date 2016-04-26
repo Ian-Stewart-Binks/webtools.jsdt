@@ -1,8 +1,12 @@
 /*******************************************************************************
- * Licensed Materials - Property of IBM
- * � Copyright IBM Corporation 2016. All Rights Reserved.
- * U.S. Government Users Restricted Rights - Use, duplication or disclosure
- * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * Copyright (c) 2016 Red Hat, Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Red Hat, Inc. - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.internal.ui.text.java;
@@ -27,7 +31,6 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 	private IdentifierEngine engine;
 
 	public IdentifierCompletionProposalComputer() {
-		// TODO: Is TemplateContextType the type we want?
 		CompilationUnitContextType contextType = (CompilationUnitContextType) JavaScriptPlugin.getDefault().getTemplateContextRegistry().getContextType(JavaContextType.NAME);
 		engine = new IdentifierEngine(contextType);
 	}
@@ -45,6 +48,7 @@ public class IdentifierCompletionProposalComputer implements IJavaCompletionProp
 	public List computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
 		JavaContentAssistInvocationContext javaContext = (JavaContentAssistInvocationContext) context;
 		IJavaScriptUnit unit = javaContext.getCompilationUnit();
+
 		engine.reset();
 		engine.complete(javaContext.getProject(), javaContext.getViewer(), javaContext.getInvocationOffset(), unit);
 
