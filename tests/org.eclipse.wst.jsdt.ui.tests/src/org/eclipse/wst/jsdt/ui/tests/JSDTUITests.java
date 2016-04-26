@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Red Hat, Inc. - refactoring
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.ui.tests;
@@ -53,9 +54,9 @@ public class JSDTUITests extends TestSuite {
 			all.addTestSuite(test);
 		}
 
-//		all.addTest(AllContentAssistTests.suite());
+		all.addTest(AllContentAssistTests.suite());
 //		all.addTest(FormattingTests.suite());
-//		all.addTest(HyperLinkTest.suite());
+//		all.addTest(new JUnit4TestAdapter(HyperLinkTest.class));
 //		all.addTest(DocumentationTest.suite());
 //		all.addTestSuite(NewJavaProjectPreferencePageTest.class);
 
